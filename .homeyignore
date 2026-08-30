@@ -1,0 +1,9 @@
+# Keep Homey deploy package lean
+docs/
+.eslintrc.json
+.gitignore
+.git/
+.DS_Store
+**/.DS_Store
+Thumbs.db
+drivers/

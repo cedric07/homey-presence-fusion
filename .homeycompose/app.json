@@ -1,5 +1,5 @@
 {
-  "id": "com.cedric07.zonestatus",
+  "id": "com.cedric07.presencefusion",
   "version": "1.0.0",
   "compatibility": ">=12.4.0",
   "sdk": 3,
@@ -8,15 +8,19 @@
     "local"
   ],
   "name": {
-    "en": "Zone Status"
+    "en": "Presence Fusion",
+    "fr": "Présence Fusion"
   },
   "description": {
-    "en": "Adds support for MyBrand devices."
+    "en": "Multi-source presence and sleep that drives Homey’s native user presence — combine Wi-Fi, BLE, Flows and more.",
+    "fr": "Présence et sommeil multi-sources qui pilotent la présence native Homey — combinez Wi-Fi, BLE, Flows et plus."
   },
   "category": [
     "tools"
   ],
-  "permissions": [],
+  "permissions": [
+    "homey:manager:api"
+  ],
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
