@@ -1,0 +1,24 @@
+{
+  "name": {
+    "en": "Presence overview",
+    "fr": "Vue présence"
+  },
+  "height": 160,
+  "settings": [
+    {
+      "id": "show_sources",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show source summary",
+        "fr": "Afficher le résumé des sources"
+      }
+    }
+  ],
+  "api": {
+    "getStatus": {
+      "method": "GET",
+      "path": "/"
+    }
+  }
+}

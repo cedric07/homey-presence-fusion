@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; padding: 0; background: transparent; }
+    .list { display: flex; flex-direction: column; gap: var(--homey-su-2); }
+    .row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--homey-su-3);
+      padding-bottom: var(--homey-su-2);
+      border-bottom: var(--homey-line-light);
+    }
+    .row:last-child { border-bottom: none; padding-bottom: 0; }
+    .left { min-width: 0; flex: 1; }
+    .name { margin: 0; }
+    .meta { margin: 2px 0 0; color: var(--homey-text-color-light); }
+    .pill-home { color: var(--homey-text-color-success); }
+    .pill-away { color: var(--homey-text-color-light); }
+    .pending { color: var(--homey-text-color-warning); }
+    .empty { color: var(--homey-text-color-light); }
+  </style>
+</head>
+<body class="homey-widget-small">
+  <div id="root" class="list">
+    <p class="homey-text-small empty" id="loading">…</p>
+  </div>
+  <script>
+    function onHomeyReady(Homey) {
+      var root = document.getElementById('root');
+      var settings = Homey.getSettings() || {};
+      var showSources = settings.show_sources !== false;
+
+      function t(key, fallback) {
+        try {
+          var v = Homey.__(key);
+          return v && v !== key ? v : fallback;
+        } catch (e) { return fallback; }
+      }
+
+      function formatWhen(ts) {
+        if (!ts) return '';
+        try {
+          return new Date(ts).toLocaleString(undefined, {
+            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+          });
+        } catch (e) { return ''; }
+      }
+
+      function formatSources(sources) {
+        var entries = Object.entries(sources || {});
+        if (!entries.length) return '';
+        return entries.map(function (e) {
+          return e[0] + ':' + ((e[1] && e[1].state) || '?');
+        }).join(' · ');
+      }
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function render(persons) {
+        if (!persons || !persons.length) {
+          root.innerHTML = '<p class="homey-text-small empty">' +
+            t('widget.empty', 'Enable a person in app settings') + '</p>';
+          Homey.ready({ height: 72 });
+          return;
+        }
+
+        root.innerHTML = persons.map(function (p) {
+          var homeClass = p.home ? 'pill-home' : 'pill-away';
+          var homeLabel = p.home === true
+            ? t('widget.home', 'Home')
+            : (p.home === false ? t('widget.away', 'Away') : '—');
+          var when = formatWhen(p.lastTransitionAt);
+          var whenHtml = when
+            ? '<div class="homey-text-small meta">' + t('widget.since', 'Since') + ' ' + escapeHtml(when) + '</div>'
+            : '';
+          var pending = (p.pendingHome !== null && p.pendingHome !== undefined)
+            ? '<div class="homey-text-small pending">' + t('widget.confirming', 'Confirming…') + '</div>'
+            : '';
+          var sourcesHtml = '';
+          if (showSources) {
+            var src = formatSources(p.presenceSources);
+            if (src) sourcesHtml = '<div class="homey-text-small meta">' + escapeHtml(src) + '</div>';
+          }
+          return '<div class="row"><div class="left">' +
+            '<p class="homey-text-medium name">' + escapeHtml(p.name) + '</p>' +
+            sourcesHtml + whenHtml + pending +
+            '</div><div class="homey-text-regular"><span class="' + homeClass + '">' +
+            homeLabel + '</span></div></div>';
+        }).join('');
+
+        var height = Math.max(72, 28 + persons.length * (showSources ? 64 : 48));
+        Homey.setHeight(height).catch(function () {});
+        Homey.ready({ height: height });
+      }
+
+      function load() {
+        Homey.api('GET', '/', {})
+          .then(function (result) {
+            render((result && result.persons) || []);
+          })
+          .catch(function (err) {
+            console.error(err);
+            root.innerHTML = '<p class="homey-text-small empty">Error</p>';
+            Homey.ready({ height: 72 });
+          });
+      }
+
+      Homey.on('presence_updated', load);
+      load();
+    }
+  </script>
+</body>
+</html>

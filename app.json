@@ -13,12 +13,13 @@
     "fr": "Présence Fusion"
   },
   "description": {
-    "en": "Multi-source presence and sleep that drives Homey’s native user presence — combine Wi-Fi, BLE, Flows and more.",
-    "fr": "Présence et sommeil multi-sources qui pilotent la présence native Homey — combinez Wi-Fi, BLE, Flows et plus."
+    "en": "Combine several devices into Homey’s native user presence — Wi‑Fi, Beacon, and more.",
+    "fr": "Combinez plusieurs appareils pour piloter la présence native Homey — Wi‑Fi, Beacon, et plus."
   },
   "category": [
     "tools"
   ],
+  "brandColor": "#2F80ED",
   "permissions": [
     "homey:manager:api"
   ],
@@ -30,5 +31,66 @@
   "author": {
     "name": "Cédric Andrietti",
     "email": "cedric.andrietti@gmail.com"
+  },
+  "api": {
+    "getBootstrap": {
+      "method": "GET",
+      "path": "/bootstrap"
+    },
+    "setUserEnabled": {
+      "method": "POST",
+      "path": "/users/enabled"
+    },
+    "setUserRules": {
+      "method": "POST",
+      "path": "/users/rules"
+    },
+    "getLinkCandidates": {
+      "method": "GET",
+      "path": "/linking/candidates"
+    },
+    "linkDeviceSource": {
+      "method": "POST",
+      "path": "/linking"
+    },
+    "unlinkDeviceSource": {
+      "method": "POST",
+      "path": "/linking/unlink"
+    },
+    "getDeviceCapabilities": {
+      "method": "GET",
+      "path": "/linking/capabilities"
+    },
+    "updateLinkedSource": {
+      "method": "POST",
+      "path": "/linking/update"
+    }
+  },
+  "widgets": {
+    "presence_overview": {
+      "name": {
+        "en": "Presence overview",
+        "fr": "Vue présence"
+      },
+      "height": 160,
+      "settings": [
+        {
+          "id": "show_sources",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show source summary",
+            "fr": "Afficher le résumé des sources"
+          }
+        }
+      ],
+      "api": {
+        "getStatus": {
+          "method": "GET",
+          "path": "/"
+        }
+      },
+      "id": "presence_overview"
+    }
   }
 }

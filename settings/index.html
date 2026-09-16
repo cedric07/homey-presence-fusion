@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script type="text/javascript" src="/homey.js" data-origin="settings"></script>
+  <style>
+    /* iOS Settings–inspired · light forced (Homey dark must not win) */
+    :root {
+      --pf-blue: #007aff;
+      --pf-blue-fill: #007aff;
+      --pf-green: #34c759;
+      --pf-orange: #ff9500;
+      --pf-red: #ff3b30;
+      --pf-canvas: #ffffff;
+      --pf-card: #ffffff;
+      --pf-ink: #000000;
+      --pf-label: #6d6d72;
+      --pf-muted: #8e8e93;
+      --pf-sep: #c6c6c8;
+      --pf-track: #e5e5ea;
+      --pf-fill: #f2f2f7;
+      --pf-radius: 12px;
+      --pf-radius-lg: 14px;
+      --pf-form-pad: 14px;
+      --pf-form-gap: 12px;
+      --pf-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%238e8e93' d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E");
+    }
+
+    html {
+      color-scheme: only light;
+    }
+
+    .pf-hidden {
+      display: none !important;
+    }
+
+    html,
+    body {
+      background: var(--pf-canvas) !important;
+      color: var(--pf-ink) !important;
+    }
+
+    .homey-header {
+      border-bottom: none !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+    }
+
+    .homey-title {
+      display: none !important;
+    }
+
+    /* Homey modal already shows app name */
+    .homey-subtitle {
+      color: var(--pf-muted) !important;
+      opacity: 1 !important;
+      font-size: 0.95em !important;
+      line-height: 1.4 !important;
+      margin: 0 0 16px !important;
+    }
+
+    .homey-form-fieldset {
+      margin: 0 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      display: flex;
+      flex-direction: column;
+      gap: var(--pf-form-gap);
+    }
+
+    .homey-form-group {
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .homey-form-label {
+      display: block !important;
+      color: var(--pf-label) !important;
+      font-weight: 600 !important;
+      font-size: 0.78em !important;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin: 0 0 6px !important;
+      padding: 0 !important;
+      line-height: 1.3 !important;
+    }
+
+    .homey-form-input,
+    .homey-form-select {
+      display: block !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      height: auto !important;
+      min-height: 0 !important;
+      margin: 0 !important;
+      padding: 10px 12px !important;
+      color: var(--pf-ink) !important;
+      background-color: var(--pf-fill) !important;
+      background-image: none !important;
+      border: 1px solid var(--pf-sep) !important;
+      border-radius: 10px !important;
+      font: inherit !important;
+      font-size: 0.95em !important;
+      line-height: 1.35 !important;
+      box-shadow: none !important;
+    }
+
+    .homey-form-select {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--pf-fill) !important;
+      background-image: var(--pf-select-chevron) !important;
+      background-repeat: no-repeat !important;
+      background-position: right 10px center !important;
+      background-size: 18px 18px !important;
+      padding-right: 36px !important;
+    }
+
+    .pf-field-hint {
+      margin: 8px 0 0 !important;
+      font-size: 0.78em !important;
+      line-height: 1.4 !important;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-field-error {
+      margin: 4px 0 0 !important;
+      font-size: 0.75em !important;
+    }
+
+    /* Segmented control — iOS style */
+    .pf-nav,
+    .pf-seg {
+      display: flex;
+      gap: 0;
+      margin: 0 0 22px;
+      padding: 3px;
+      border-radius: 100px;
+      background: var(--pf-track) !important;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .pf-nav-btn,
+    .pf-seg-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--pf-ink) !important;
+      font: inherit;
+      font-weight: 600;
+      font-size: 0.9em;
+      padding: 9px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .pf-seg-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .pf-seg-btn .pf-icon {
+      width: 16px;
+      height: 16px;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-nav-btn.is-active,
+    .pf-seg-btn.is-active {
+      background: var(--pf-card) !important;
+      color: var(--pf-ink) !important;
+      font-weight: 700 !important;
+      border-radius: 100px !important;
+    }
+
+    .pf-seg-btn.is-active .pf-icon {
+      color: var(--pf-blue) !important;
+    }
+
+    /* iOS section headers */
+    .pf-section-label {
+      margin: 8px 16px 8px;
+      font-size: 0.8em;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--pf-label) !important;
+    }
+
+    .pf-section-label .pf-well {
+      display: none;
+    }
+
+    .pf-section-foot {
+      margin: 8px 16px 0;
+      font-size: 0.82em;
+      line-height: 1.4;
+      color: var(--pf-label) !important;
+    }
+
+    .pf-callout {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: var(--pf-radius-lg);
+      background: linear-gradient(180deg, #f0f7ff 0%, #eaf3ff 100%);
+      border: 1px solid rgba(0, 122, 255, 0.14);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
+    }
+
+    .pf-callout-icon {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      margin-top: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+    }
+
+    .pf-callout-icon .pf-icon {
+      width: 16px !important;
+      height: 16px !important;
+      color: var(--pf-blue) !important;
+    }
+
+    .pf-callout-text {
+      flex: 1;
+      min-width: 0;
+      margin: 0;
+      padding-top: 3px;
+      font-size: 0.86em;
+      line-height: 1.4;
+      color: #3a5a80 !important;
+      letter-spacing: -0.01em;
+    }
+
+    .pf-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* Grouped white inset */
+    .pf-card,
+    .pf-group {
+      background: var(--pf-card) !important;
+      color: var(--pf-ink) !important;
+      border: 1px solid var(--pf-sep);
+      border-radius: var(--pf-radius-lg);
+      box-shadow: none;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    .pf-card-pad {
+      padding: var(--pf-form-pad) !important;
+    }
+
+    .pf-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 52px;
+      padding: 11px 16px;
+      border: 0;
+      border-bottom: 0.5px solid var(--pf-sep);
+      background: transparent;
+      color: var(--pf-ink) !important;
+      font: inherit;
+      text-align: start;
+      cursor: default;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .pf-row:last-child {
+      border-bottom: none;
+    }
+
+    .pf-card.pf-row {
+      border-radius: 0;
+      border-bottom: 0.5px solid var(--pf-sep);
+    }
+
+    .pf-stack .pf-card.pf-row:first-child {
+      border-radius: var(--pf-radius-lg) var(--pf-radius-lg) 0 0;
+    }
+
+    .pf-stack .pf-card.pf-row:last-child {
+      border-radius: 0 0 var(--pf-radius-lg) var(--pf-radius-lg);
+      border-bottom: none;
+    }
+
+    .pf-stack .pf-card.pf-row:only-child {
+      border-radius: var(--pf-radius-lg);
+    }
+
+    .pf-row.is-tappable {
+      cursor: pointer;
+    }
+
+    .pf-row.is-tappable:active {
+      background: #d1d1d6 !important;
+    }
+
+    .pf-row-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pf-row-title {
+      margin: 0;
+      font-weight: 400;
+      font-size: 1.05em;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-row-sub {
+      margin: 4px 0 0;
+      font-size: 0.82em;
+      line-height: 1.35;
+      color: var(--pf-muted) !important;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pf-row-aside {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      align-self: center;
+    }
+
+    .pf-row-action {
+      flex: 0 0 108px;
+      width: 108px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .pf-btn-config {
+      all: unset;
+      box-sizing: border-box !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 32px;
+      padding: 0 12px !important;
+      border-radius: 8px !important;
+      background: var(--pf-fill) !important;
+      color: var(--pf-blue) !important;
+      font: inherit !important;
+      font-size: 0.8em !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      border: 0 !important;
+      box-shadow: none !important;
+      white-space: nowrap;
+      line-height: 1 !important;
+    }
+
+    .pf-btn-config:active {
+      background: #d1d1d6 !important;
+    }
+
+    .pf-btn-config .pf-icon {
+      width: 13px !important;
+      height: 13px !important;
+      color: var(--pf-blue) !important;
+    }
+
+    .pf-avatar,
+    .pf-well {
+      flex: 0 0 auto;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95em;
+      border: 0;
+      overflow: hidden;
+    }
+
+    .pf-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .pf-avatar.has-img {
+      background: transparent !important;
+      color: transparent !important;
+      padding: 0;
+    }
+
+    .pf-avatar.is-off.has-img {
+      opacity: 0.55;
+    }
+
+    .pf-well {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .pf-well .pf-icon,
+    .pf-avatar .pf-icon {
+      width: 18px;
+      height: 18px;
+      color: inherit;
+    }
+
+    .pf-avatar.is-off,
+    .pf-well.is-blue {
+      background: #e8f1ff;
+      color: var(--pf-blue) !important;
+    }
+
+    .pf-well.is-violet {
+      background: #f3e8ff;
+      color: #af52de !important;
+    }
+
+    .pf-well.is-mint {
+      background: #e4f8ea;
+      color: #248a3d !important;
+    }
+
+    .pf-well.is-peach {
+      background: #fff1e0;
+      color: #c93400 !important;
+    }
+
+    .pf-well.is-rose {
+      background: #ffe5e5;
+      color: var(--pf-red) !important;
+    }
+
+    .pf-avatar.is-on {
+      background: var(--pf-blue);
+      color: #fff !important;
+      box-shadow: none;
+    }
+
+    .pf-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.72em;
+      font-weight: 650;
+      background: var(--pf-fill);
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-chip.is-home {
+      background: #e4f8ea;
+      color: #248a3d !important;
+    }
+
+    .pf-chip.is-away {
+      background: #fff1e0;
+      color: #c93400 !important;
+    }
+
+    .pf-chip.is-on {
+      background: #e8f1ff;
+      color: var(--pf-blue) !important;
+    }
+
+    .pf-chip.is-off {
+      background: var(--pf-fill);
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .pf-icon {
+      width: 18px;
+      height: 18px;
+      display: block;
+      flex: 0 0 auto;
+      color: var(--pf-muted);
+    }
+
+    .pf-icon.is-accent {
+      color: var(--pf-blue);
+    }
+
+    .pf-icon.is-danger {
+      color: var(--pf-red);
+    }
+
+    .pf-chevron {
+      color: #c7c7cc !important;
+      width: 16px;
+      height: 16px;
+    }
+
+    .pf-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      border: 0 !important;
+      background: transparent !important;
+      color: var(--pf-blue) !important;
+      font: inherit;
+      font-weight: 400;
+      font-size: 1.05em;
+      padding: 4px 0 14px;
+      margin: 0;
+      box-shadow: none !important;
+      cursor: pointer;
+    }
+
+    .pf-back .pf-icon {
+      color: var(--pf-blue) !important;
+      width: 22px;
+      height: 22px;
+    }
+
+    .pf-person-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border-radius: var(--pf-radius-lg);
+      background: var(--pf-card) !important;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .pf-person-head .pf-avatar {
+      width: 48px;
+      height: 48px;
+      font-size: 1.15em;
+      border-radius: 12px;
+    }
+
+    .pf-person-head-name {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.2em;
+      letter-spacing: -0.02em;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-person-head-meta {
+      margin: 5px 0 0;
+      font-size: 0.85em;
+      color: var(--pf-muted) !important;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pf-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .pf-source {
+      display: block;
+      padding: 14px 16px 16px;
+      border-bottom: 0.5px solid var(--pf-sep);
+      box-sizing: border-box;
+    }
+
+    .pf-source:last-child {
+      border-bottom: none;
+    }
+
+    .pf-source-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .pf-source-top .pf-row-title {
+      font-weight: 600;
+      font-size: 1.02em;
+    }
+
+    .pf-source-cap {
+      margin-top: 10px;
+    }
+
+    .pf-source-cap-line {
+      margin: 0;
+      font-size: 0.82em;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.35;
+      color: var(--pf-label) !important;
+    }
+
+    .pf-source-cap-line code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.98em;
+      font-weight: 650;
+      color: var(--pf-blue) !important;
+      background: transparent;
+      padding: 0;
+    }
+
+    .pf-source-cap-line .pf-cap-tag {
+      font-family: inherit;
+      font-weight: 650;
+      font-size: 0.98em;
+      color: var(--pf-orange) !important;
+      text-transform: none;
+    }
+
+    .pf-source-cap-hint {
+      margin: 4px 0 0;
+      font-size: 0.78em;
+      line-height: 1.4;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-source-actions {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pf-source-edit {
+      all: unset;
+      box-sizing: border-box !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      min-height: 30px;
+      padding: 0 11px !important;
+      border-radius: 8px !important;
+      background: var(--pf-fill) !important;
+      color: var(--pf-blue) !important;
+      font: inherit !important;
+      font-size: 0.78em !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      border: 0 !important;
+      box-shadow: none !important;
+      line-height: 1 !important;
+    }
+
+    .pf-source-edit:active,
+    .pf-source-edit.is-open {
+      background: #e5e5ea !important;
+    }
+
+    .pf-source-edit .pf-icon {
+      width: 12px !important;
+      height: 12px !important;
+      color: var(--pf-blue) !important;
+      transition: transform 0.15s ease;
+    }
+
+    .pf-source-edit.is-open .pf-icon {
+      transform: rotate(90deg);
+    }
+
+    .pf-source-adv {
+      margin-top: 10px;
+      padding: 0;
+      border-radius: 12px;
+      background: var(--pf-fill) !important;
+      border: 0;
+      overflow: hidden;
+    }
+
+    .pf-source-adv-inner {
+      padding: var(--pf-form-pad);
+      display: flex;
+      flex-direction: column;
+      gap: var(--pf-form-gap);
+    }
+
+    /* Fields on grey inset → white surface */
+    .pf-source-adv .homey-form-input {
+      background-color: #fff !important;
+      background-image: none !important;
+    }
+
+    .pf-source-adv .homey-form-select {
+      background-color: #fff !important;
+      background-image: var(--pf-select-chevron) !important;
+      background-repeat: no-repeat !important;
+      background-position: right 10px center !important;
+      background-size: 18px 18px !important;
+    }
+
+    .pf-source-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: #fff !important;
+      border: 1px solid var(--pf-sep);
+      box-sizing: border-box;
+    }
+
+    .pf-source-toggle-label {
+      margin: 0;
+      font-size: 0.9em;
+      font-weight: 500;
+      color: var(--pf-ink) !important;
+      letter-spacing: -0.01em;
+      text-transform: none !important;
+    }
+
+    .pf-source-adv .pf-source-save {
+      all: unset;
+      box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 100% !important;
+      padding: 11px 14px !important;
+      border-radius: 10px !important;
+      background: var(--pf-blue) !important;
+      color: #fff !important;
+      font: inherit !important;
+      font-size: 0.95em !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      border: 0 !important;
+      box-shadow: none !important;
+      text-align: center;
+      margin: 0 !important;
+    }
+
+    .pf-source-adv .pf-source-save:active {
+      opacity: 0.88;
+    }
+
+    .pf-source-adv .pf-source-save.is-loading,
+    .pf-source-adv .pf-source-save:disabled {
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .pf-source-adv .pf-field-hint {
+      margin: 0 !important;
+      padding: var(--pf-form-pad);
+      font-size: 0.75em;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-add-search {
+      padding: var(--pf-form-pad) !important;
+    }
+
+    .pf-add-search .pf-field-hint {
+      margin: 6px 0 0 !important;
+    }
+
+    .pf-candidates {
+      margin-top: 8px;
+    }
+
+    .pf-candidates-label {
+      margin: 0 16px 6px;
+      font-size: 0.72em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--pf-label) !important;
+    }
+
+    .pf-candidates-frame {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pf-candidates-scroll {
+      max-height: 249px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--pf-sep) transparent;
+    }
+
+    .pf-candidates-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .pf-candidates-scroll::-webkit-scrollbar-thumb {
+      background: var(--pf-sep);
+      border-radius: 6px;
+    }
+
+    .pf-candidates-fade {
+      position: absolute;
+      left: 1px;
+      right: 1px;
+      bottom: 1px;
+      height: 56px;
+      border-radius: 0 0 calc(var(--pf-radius-lg) - 1px) calc(var(--pf-radius-lg) - 1px);
+      pointer-events: none;
+      background: linear-gradient(to top, #ffffff 18%, rgba(255, 255, 255, 0.72) 55%, rgba(255, 255, 255, 0));
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .pf-candidates-frame.is-scrollable:not(.is-at-end) .pf-candidates-fade {
+      opacity: 1;
+    }
+
+    .pf-candidates-hint {
+      display: none;
+      margin: 6px 16px 0;
+      font-size: 0.72em;
+      color: var(--pf-muted) !important;
+      text-align: center;
+      letter-spacing: -0.01em;
+    }
+
+    .pf-candidates-frame.is-scrollable + .pf-candidates-hint {
+      display: block;
+    }
+
+    .pf-result {
+      all: unset;
+      box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center;
+      gap: 12px;
+      width: 100% !important;
+      text-align: start;
+      border: 0 !important;
+      border-bottom: 0.5px solid var(--pf-sep) !important;
+      background: #fff !important;
+      color: var(--pf-ink) !important;
+      font: inherit !important;
+      padding: 12px 16px !important;
+      cursor: pointer;
+      min-height: 56px;
+    }
+
+    .pf-result:last-child {
+      border-bottom: none !important;
+    }
+
+    .pf-result-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pf-result .pf-row-title {
+      margin: 0;
+      font-weight: 500 !important;
+      font-size: 1em !important;
+      letter-spacing: -0.02em;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-result .pf-row-sub {
+      margin: 3px 0 0;
+      font-size: 0.78em !important;
+      line-height: 1.35;
+      color: var(--pf-muted) !important;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pf-result .pf-row-sub code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.98em;
+      font-weight: 650;
+      color: var(--pf-blue) !important;
+      background: transparent;
+    }
+
+    .pf-result-check {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      color: transparent;
+    }
+
+    .pf-result-check .pf-icon {
+      width: 16px !important;
+      height: 16px !important;
+      color: inherit !important;
+    }
+
+    .pf-result.is-selected {
+      background: #f0f7ff !important;
+    }
+
+    .pf-result.is-selected .pf-result-check {
+      background: var(--pf-blue);
+      color: #fff !important;
+    }
+
+    .pf-result:hover {
+      background: #f0f7ff !important;
+    }
+
+    .pf-result.is-selected:hover {
+      background: #e5f0ff !important;
+    }
+
+    .pf-result:active {
+      background: #e5f0ff !important;
+    }
+
+    .pf-add-actions {
+      margin-top: var(--pf-form-gap);
+    }
+
+    .pf-hint,
+    .pf-note {
+      margin: 0;
+      line-height: 1.4;
+      color: var(--pf-muted) !important;
+      font-size: 0.9em;
+    }
+
+    .pf-actions {
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+
+    .homey-button-primary-full,
+    .pf-btn-primary {
+      all: unset;
+      box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 100% !important;
+      background: var(--pf-blue) !important;
+      color: #fff !important;
+      border: 0 !important;
+      border-radius: 10px !important;
+      font: inherit !important;
+      font-weight: 600 !important;
+      font-size: 0.95em !important;
+      padding: 12px 14px !important;
+      box-shadow: none !important;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .homey-button-primary-full:active {
+      opacity: 0.9;
+    }
+
+    .homey-button-primary-full.is-disabled,
+    .homey-button-primary-full:disabled {
+      background: var(--pf-track) !important;
+      color: var(--pf-muted) !important;
+      opacity: 1 !important;
+      pointer-events: none;
+    }
+
+    .pf-soon {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: var(--pf-radius-lg);
+      background: var(--pf-card) !important;
+      border: 0;
+      line-height: 1.4;
+      font-size: 0.9em;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-soon strong {
+      color: var(--pf-ink) !important;
+      font-weight: 600;
+    }
+
+    .pf-soon .pf-note {
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-empty {
+      padding: 24px 16px;
+      text-align: center;
+      border-radius: var(--pf-radius-lg);
+      background: var(--pf-card) !important;
+    }
+
+    .pf-empty p {
+      margin: 0;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-banner {
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: var(--pf-radius);
+      line-height: 1.35;
+      font-size: 0.9em;
+      background: var(--pf-card) !important;
+      border: 0;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-banner.is-visible {
+      display: flex;
+    }
+
+    .pf-banner-icon {
+      flex: 0 0 auto;
+      width: 20px;
+      height: 20px;
+      color: var(--pf-blue);
+    }
+
+    .pf-banner-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pf-banner-title {
+      margin: 0;
+      font-weight: 600;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-banner-text {
+      margin: 2px 0 0;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-banner-close {
+      border: 0;
+      background: transparent;
+      color: var(--pf-muted);
+      cursor: pointer;
+      padding: 2px;
+      border-radius: 6px;
+    }
+
+    .pf-banner.is-success {
+      background: #e4f8ea !important;
+    }
+
+    .pf-banner.is-error {
+      background: #ffe5e5 !important;
+    }
+
+    .pf-banner.is-info {
+      background: #e8f1ff !important;
+    }
+
+    .pf-banner.is-warning {
+      background: #fff1e0 !important;
+    }
+
+    .pf-field-error {
+      display: none;
+      margin: 6px 0 0;
+      color: var(--pf-red) !important;
+      font-size: 0.8em;
+    }
+
+    .pf-field-error.is-visible {
+      display: block;
+    }
+
+    .homey-form-group.has-error .homey-form-input,
+    .homey-form-group.has-error .homey-form-select {
+      outline: 2px solid #ffaba6;
+    }
+
+    .pf-load-error {
+      margin-top: 16px;
+    }
+
+    .pf-icon-btn {
+      border: 0;
+      background: transparent !important;
+      padding: 6px;
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .pf-icon-btn:active {
+      background: var(--pf-fill) !important;
+    }
+
+    /* iOS-style switch */
+    .pf-switch {
+      position: relative;
+      display: inline-block;
+      width: 51px;
+      height: 31px;
+      flex: 0 0 auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .pf-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+      position: absolute;
+    }
+
+    .pf-switch-slider {
+      position: absolute;
+      inset: 0;
+      background: #e9e9eb;
+      border-radius: 31px;
+      transition: background 0.2s ease;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+    }
+
+    .pf-switch-slider::before {
+      content: "";
+      position: absolute;
+      width: 27px;
+      height: 27px;
+      left: 2px;
+      top: 2px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 1px 1px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+    }
+
+    .pf-switch input:checked+.pf-switch-slider {
+      background: var(--pf-green);
+    }
+
+    .pf-switch input:checked+.pf-switch-slider::before {
+      transform: translateX(20px);
+    }
+
+    .pf-switch input:focus-visible+.pf-switch-slider {
+      outline: 2px solid rgba(0, 122, 255, 0.45);
+      outline-offset: 2px;
+    }
+
+    .pf-help-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .pf-help-row .pf-note {
+      flex: 1;
+      color: var(--pf-ink) !important;
+      font-size: 0.95em;
+    }
+
+    .pf-help-list {
+      flex: 1;
+      margin: 0;
+      padding: 0 0 0 1.15em;
+      color: var(--pf-ink) !important;
+      font-size: 0.95em;
+      line-height: 1.45;
+    }
+
+    .pf-help-list li+li {
+      margin-top: 6px;
+    }
+
+    .pf-brand-bar {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Inline Material-style icons (no CDN) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+    <symbol id="i-chevron" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M9.29 6.71a1 1 0 0 0 0 1.41L13.17 12l-3.88 3.88a1 1 0 1 0 1.41 1.41l4.59-4.59a1 1 0 0 0 0-1.41L10.7 6.7a1 1 0 0 0-1.41.01z" />
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+    </symbol>
+    <symbol id="i-sensors" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 2a1 1 0 0 1 1 1v1.07A8.001 8.001 0 0 1 19.93 11H21a1 1 0 1 1 0 2h-1.07A8.001 8.001 0 0 1 13 19.93V21a1 1 0 1 1-2 0v-1.07A8.001 8.001 0 0 1 4.07 13H3a1 1 0 1 1 0-2h1.07A8.001 8.001 0 0 1 11 4.07V3a1 1 0 0 1 1-1zm0 4a6 6 0 1 0 0 12A6 6 0 0 0 12 6zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" />
+    </symbol>
+    <symbol id="i-tune" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+    </symbol>
+    <symbol id="i-error" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+    </symbol>
+    <symbol id="i-delete" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+    </symbol>
+    <symbol id="i-people" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z" />
+    </symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" />
+    </symbol>
+    <symbol id="i-bolt" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M11 21h-1l1-7H7.5c-.88 0-.33-.75-.31-.78C8.48 10.94 10.42 7.54 13.01 3h1l-1 7h3.51c.4 0 .62.19.4.66C12.97 17.55 11 21 11 21z" />
+    </symbol>
+  </svg>
+
+  <div id="view-loading">
+    <header class="homey-header">
+      <h1 class="homey-title" data-i18n="settings.title">Presence Fusion</h1>
+      <p class="homey-subtitle" data-i18n="settings.loading_page">Loading…</p>
+    </header>
+    <div class="pf-brand-bar" aria-hidden="true"></div>
+    <div id="load-error" class="pf-banner is-error pf-load-error pf-hidden" role="alert">
+      <svg class="pf-banner-icon" aria-hidden="true">
+        <use href="#i-error" />
+      </svg>
+      <div class="pf-banner-body">
+        <p class="pf-banner-title" data-i18n="settings.load_failed_title">Couldn’t load settings</p>
+        <p class="pf-banner-text" id="load-error-text"></p>
+      </div>
+    </div>
+    <div class="pf-actions pf-hidden" id="load-retry-wrap">
+      <button type="button" id="btn-retry" class="homey-button-primary-full" data-i18n="settings.retry">Try
+        again</button>
+    </div>
+  </div>
+
+  <div id="view-main" class="pf-hidden">
+    <header class="homey-header" id="main-header">
+      <h1 class="homey-title" data-i18n="settings.title">Presence Fusion</h1>
+      <p class="homey-subtitle" data-i18n="settings.subtitle">
+        Drive Homey’s native presence from several devices — simply.
+      </p>
+    </header>
+    <div class="pf-brand-bar" aria-hidden="true"></div>
+
+    <div id="banner" class="pf-banner" role="status" aria-live="polite">
+      <svg class="pf-banner-icon" id="banner-icon" aria-hidden="true">
+        <use href="#i-info" />
+      </svg>
+      <div class="pf-banner-body">
+        <p class="pf-banner-title" id="banner-title"></p>
+        <p class="pf-banner-text" id="banner-text"></p>
+      </div>
+      <button type="button" class="pf-banner-close" id="banner-close" aria-label="Close">
+        <svg class="pf-icon" width="18" height="18">
+          <use href="#i-close" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Hub: People | Help -->
+    <div id="view-hub">
+      <nav class="pf-nav" role="tablist">
+        <button type="button" class="pf-nav-btn is-active" data-hub="people"
+          data-i18n="settings.tab_people">People</button>
+        <button type="button" class="pf-nav-btn" data-hub="help" data-i18n="settings.tab_help">Help</button>
+      </nav>
+
+      <section id="panel-people" class="pf-panel">
+        <p class="pf-section-label" data-i18n="settings.people_legend">Homey users</p>
+        <aside class="pf-callout" role="note">
+          <span class="pf-callout-icon" aria-hidden="true">
+            <svg class="pf-icon">
+              <use href="#i-info" />
+            </svg>
+          </span>
+          <p class="pf-callout-text" data-i18n="settings.people_hint">
+            Enable Fusion, then open a person to link sources and set rules. Native Homey presence is what Flows use.
+          </p>
+        </aside>
+        <div id="people-list" class="pf-group"></div>
+      </section>
+
+      <section id="panel-help" class="pf-panel pf-hidden">
+        <p class="pf-section-label" data-i18n="settings.help_geo_title">Location presence</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-peach"><svg class="pf-icon">
+                <use href="#i-pin" />
+              </svg></span>
+            <p class="pf-note" data-i18n="settings.help_geo">
+              Turn OFF Homey location-based presence for every managed user. Otherwise Homey and Presence Fusion
+              overwrite each other.
+            </p>
+          </div>
+        </div>
+        <p class="pf-section-label" data-i18n="settings.help_how_title">How it works</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-mint"><svg class="pf-icon">
+                <use href="#i-bolt" />
+              </svg></span>
+            <ol class="pf-help-list">
+              <li data-i18n="settings.help_how_1">Enable a person</li>
+              <li data-i18n="settings.help_how_2">Link devices (phone, Nut, Beacon…)</li>
+              <li data-i18n="settings.help_how_3">Homey native presence updates automatically</li>
+              <li data-i18n="settings.help_how_4">Use Homey’s built-in Flow cards</li>
+            </ol>
+          </div>
+        </div>
+        <p class="pf-section-label" data-i18n="settings.v2_title">Coming in V2</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-violet"><svg class="pf-icon">
+                <use href="#i-help" />
+              </svg></span>
+            <div>
+              <p class="pf-note" data-i18n="settings.v2_forced">Forced presence (override sources).</p>
+              <p class="pf-note" style="margin-top:8px" data-i18n="settings.v2_sleep">Native asleep management.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Person detail -->
+    <div id="view-person" class="pf-hidden">
+      <button type="button" class="pf-back" id="btn-back">
+        <svg class="pf-icon" width="22" height="22">
+          <use href="#i-back" />
+        </svg>
+        <span data-i18n="settings.back_people">People</span>
+      </button>
+
+      <div class="pf-person-head">
+        <div class="pf-avatar is-on" id="person-avatar">?</div>
+        <div>
+          <p class="pf-person-head-name" id="person-name">—</p>
+          <p class="pf-person-head-meta" id="person-meta"></p>
+        </div>
+      </div>
+
+      <div class="pf-seg" role="tablist">
+        <button type="button" class="pf-seg-btn is-active" data-seg="sources" id="seg-sources">
+          <svg class="pf-icon">
+            <use href="#i-sensors" />
+          </svg>
+          <span data-i18n="settings.tab_sources">Sources</span>
+        </button>
+        <button type="button" class="pf-seg-btn" data-seg="rules" id="seg-rules">
+          <svg class="pf-icon">
+            <use href="#i-tune" />
+          </svg>
+          <span data-i18n="settings.tab_rules">Rules</span>
+        </button>
+      </div>
+
+      <div id="seg-panel-sources">
+        <p class="pf-section-label" data-i18n="settings.linked">Linked sources</p>
+        <div class="pf-group">
+          <ul class="pf-list" id="links"></ul>
+          <p class="pf-hint pf-hidden" id="links-empty" style="padding:14px 16px" data-i18n="settings.no_links">No
+            device linked yet.</p>
+        </div>
+
+        <p class="pf-section-label" data-i18n="settings.add">Add a device</p>
+        <div class="pf-group pf-add-search">
+          <div class="homey-form-group" style="margin:0">
+            <label class="homey-form-label" for="search" data-i18n="settings.search">Search</label>
+            <input class="homey-form-input" id="search" type="search" autocomplete="off"
+              data-i18n-placeholder="settings.search_placeholder" placeholder="Type at least 2 letters…" />
+            <p class="pf-field-hint" id="candidates-hint" data-i18n="settings.type_to_search">Type at least 2 letters to
+              search.</p>
+          </div>
+        </div>
+        <div class="pf-candidates pf-hidden" id="candidates-wrap">
+          <p class="pf-candidates-label" data-i18n="settings.search_results">Results</p>
+          <div class="pf-group pf-candidates-frame" id="candidates-frame">
+            <div class="pf-candidates-scroll" id="candidates"></div>
+            <div class="pf-candidates-fade" aria-hidden="true"></div>
+          </div>
+          <p class="pf-candidates-hint" data-i18n="settings.search_scroll_hint">Faites défiler pour voir plus</p>
+        </div>
+        <div class="pf-add-actions">
+          <button type="button" id="btn-link" class="homey-button-primary-full is-disabled" disabled
+            data-i18n="settings.link">Link device</button>
+        </div>
+      </div>
+
+      <div id="seg-panel-rules" class="pf-hidden">
+        <p class="pf-section-label" data-i18n="settings.rules_legend">Fusion</p>
+        <div class="pf-group pf-card-pad">
+          <fieldset class="homey-form-fieldset" id="rules-body" style="margin:0">
+            <div class="homey-form-group">
+              <label class="homey-form-label" for="fusion-mode" data-i18n="settings.fusion_mode">Mode</label>
+              <select class="homey-form-select" id="fusion-mode">
+                <option value="or" data-i18n="settings.mode_or">OR — any source home ⇒ present</option>
+                <option value="and" data-i18n="settings.mode_and">AND — all sources home ⇒ present</option>
+                <option value="quorum" data-i18n="settings.mode_quorum">Quorum — at least N sources</option>
+              </select>
+            </div>
+            <div class="homey-form-group" id="quorum-wrap">
+              <label class="homey-form-label" for="quorum-n" data-i18n="settings.quorum_n">Quorum N</label>
+              <input class="homey-form-input" id="quorum-n" type="number" min="1" max="10" step="1" />
+              <p class="pf-field-error" id="err-quorum"></p>
+            </div>
+            <div class="homey-form-group" id="delay-home-wrap">
+              <label class="homey-form-label" for="delay-home" data-i18n="settings.delay_home">Confirm home
+                (seconds)</label>
+              <input class="homey-form-input" id="delay-home" type="number" min="0" max="120" step="1" />
+              <p class="pf-field-error" id="err-delay-home"></p>
+            </div>
+            <div class="homey-form-group" id="delay-away-wrap">
+              <label class="homey-form-label" for="delay-away" data-i18n="settings.delay_away">Confirm away
+                (seconds)</label>
+              <input class="homey-form-input" id="delay-away" type="number" min="60" max="3600" step="1" />
+              <p class="pf-field-error" id="err-delay-away"></p>
+            </div>
+            <div class="pf-actions">
+              <button type="button" id="btn-save-rules" class="homey-button-primary-full"
+                data-i18n="settings.save_rules">Save rules</button>
+            </div>
+          </fieldset>
+        </div>
+        <div class="pf-soon">
+          <strong data-i18n="settings.v2_title">Coming in V2</strong>
+          <p class="pf-note" style="margin-top:6px" data-i18n="settings.v2_forced">Forced presence (override sources).
+          </p>
+          <p class="pf-note" style="margin-top:4px" data-i18n="settings.v2_sleep">Native asleep management.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function onHomeyReady(Homey) {
+      var viewLoading = document.getElementById('view-loading');
+      var viewMain = document.getElementById('view-main');
+      var viewHub = document.getElementById('view-hub');
+      var viewPerson = document.getElementById('view-person');
+      var mainHeader = document.getElementById('main-header');
+      var loadError = document.getElementById('load-error');
+      var loadErrorText = document.getElementById('load-error-text');
+      var loadRetryWrap = document.getElementById('load-retry-wrap');
+      var btnRetry = document.getElementById('btn-retry');
+      var peopleList = document.getElementById('people-list');
+      var linksEl = document.getElementById('links');
+      var linksEmpty = document.getElementById('links-empty');
+      var searchEl = document.getElementById('search');
+      var candidatesEl = document.getElementById('candidates');
+      var candidatesHint = document.getElementById('candidates-hint');
+      var candidatesWrap = document.getElementById('candidates-wrap');
+      var candidatesFrame = document.getElementById('candidates-frame');
+      var linkBtn = document.getElementById('btn-link');
+      var fusionMode = document.getElementById('fusion-mode');
+      var quorumN = document.getElementById('quorum-n');
+      var quorumWrap = document.getElementById('quorum-wrap');
+      var delayHome = document.getElementById('delay-home');
+      var delayAway = document.getElementById('delay-away');
+      var delayHomeWrap = document.getElementById('delay-home-wrap');
+      var delayAwayWrap = document.getElementById('delay-away-wrap');
+      var errQuorum = document.getElementById('err-quorum');
+      var errDelayHome = document.getElementById('err-delay-home');
+      var errDelayAway = document.getElementById('err-delay-away');
+      var saveRulesBtn = document.getElementById('btn-save-rules');
+      var bannerEl = document.getElementById('banner');
+      var bannerIcon = document.getElementById('banner-icon');
+      var bannerTitle = document.getElementById('banner-title');
+      var bannerText = document.getElementById('banner-text');
+      var bannerClose = document.getElementById('banner-close');
+      var btnBack = document.getElementById('btn-back');
+      var personAvatar = document.getElementById('person-avatar');
+      var personName = document.getElementById('person-name');
+      var personMeta = document.getElementById('person-meta');
+      var segSources = document.getElementById('seg-sources');
+      var segRules = document.getElementById('seg-rules');
+      var segPanelSources = document.getElementById('seg-panel-sources');
+      var segPanelRules = document.getElementById('seg-panel-rules');
+
+      var bootstrap = { users: [] };
+      var selectedUserId = null;
+      var currentSeg = 'sources';
+      var screen = 'hub'; // hub | person
+      var hubTab = 'people';
+      var candidates = [];
+      var selectedDeviceId = null;
+      var searchTimer = null;
+      var searchSeq = 0;
+      var bannerTimer = null;
+      var busy = false;
+
+      function t(key, fallback) {
+        try {
+          var v = Homey.__(key);
+          return v && v !== key ? v : (fallback || key);
+        } catch (e) {
+          return fallback || key;
+        }
+      }
+
+      function api(method, path, body) {
+        return new Promise(function (resolve, reject) {
+          Homey.api(method, path, body == null ? null : body, function (err, result) {
+            if (err) reject(err);
+            else resolve(result);
+          });
+        });
+      }
+
+      function rawError(err) {
+        if (!err) return '';
+        if (typeof err === 'string') return err;
+        if (err.message) return String(err.message);
+        return String(err);
+      }
+
+      function friendlyError(err) {
+        var raw = rawError(err).replace(/^Error:\s*/i, '').trim();
+        var lower = raw.toLowerCase();
+        if (!raw) return t('settings.err_generic', 'Something went wrong. Please try again.');
+        if (lower.indexOf('source not found') !== -1) return t('settings.err_source_not_found', 'This linked source was not found.');
+        if (lower.indexOf('device not found') !== -1) return t('settings.err_device_not_found', 'This device is no longer available on Homey.');
+        if (lower.indexOf('user not found') !== -1 || lower.indexOf('person not found') !== -1) {
+          return t('settings.err_user_not_found', 'This Homey user was not found.');
+        }
+        if (lower.indexOf('not enabled') !== -1) return t('settings.err_user_disabled', 'Enable this person first.');
+        if (lower.indexOf('confirm home') !== -1) return t('settings.val_delay_home', 'Use a value between 0 and 120 seconds.');
+        if (lower.indexOf('confirm away') !== -1) return t('settings.val_delay_away', 'Use a value between 60 and 3600 seconds.');
+        if (lower.indexOf('quorum') !== -1) return t('settings.val_quorum', 'Enter a whole number between 1 and 10.');
+        if (lower.indexOf('capability') !== -1) return t('settings.err_capability', 'Could not read a suitable capability on this device.');
+        if (lower.indexOf('network') !== -1 || lower.indexOf('timeout') !== -1 || lower.indexOf('econn') !== -1) {
+          return t('settings.err_network', 'Connection issue. Check Homey and try again.');
+        }
+        if (lower.indexOf('permission') !== -1 || lower.indexOf('denied') !== -1) {
+          return t('settings.err_permission', 'Homey denied this action. Check the app permissions.');
+        }
+        if (raw.length > 160) raw = raw.slice(0, 157) + '…';
+        return raw;
+      }
+
+      function hideBanner() {
+        clearTimeout(bannerTimer);
+        bannerEl.classList.remove('is-visible', 'is-success', 'is-error', 'is-info', 'is-warning');
+        bannerTitle.textContent = '';
+        bannerText.textContent = '';
+      }
+
+      function setBannerIcon(type) {
+        var href = '#i-info';
+        if (type === 'success') href = '#i-check';
+        else if (type === 'error' || type === 'warning') href = '#i-error';
+        bannerIcon.innerHTML = '<use href="' + href + '"/>';
+      }
+
+      function notify(type, title, text, opts) {
+        opts = opts || {};
+        clearTimeout(bannerTimer);
+        bannerEl.classList.remove('is-success', 'is-error', 'is-info', 'is-warning');
+        bannerEl.classList.add('is-' + type, 'is-visible');
+        setBannerIcon(type);
+        bannerTitle.textContent = title || '';
+        bannerText.textContent = text || '';
+        bannerText.style.display = text ? '' : 'none';
+        bannerEl.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        if (opts.sticky) return;
+        var ms = opts.duration != null ? opts.duration : (type === 'error' ? 7000 : 3500);
+        bannerTimer = setTimeout(hideBanner, ms);
+      }
+
+      function notifySuccess(title, text) { notify('success', title, text); }
+      function notifyError(title, text) { notify('error', title, text, { duration: 8000 }); }
+      function notifyInfo(title, text) { notify('info', title, text); }
+      function notifyWarning(title, text) { notify('warning', title, text, { duration: 6000 }); }
+
+      function setFieldError(wrap, errEl, message) {
+        if (!wrap || !errEl) return;
+        if (message) {
+          wrap.classList.add('has-error');
+          errEl.textContent = message;
+          errEl.classList.add('is-visible');
+        } else {
+          wrap.classList.remove('has-error');
+          errEl.textContent = '';
+          errEl.classList.remove('is-visible');
+        }
+      }
+
+      function clearRulesErrors() {
+        setFieldError(quorumWrap, errQuorum, null);
+        setFieldError(delayHomeWrap, errDelayHome, null);
+        setFieldError(delayAwayWrap, errDelayAway, null);
+      }
+
+      function validateRules() {
+        clearRulesErrors();
+        var ok = true;
+        var q = Number(quorumN.value);
+        var home = Number(delayHome.value);
+        var away = Number(delayAway.value);
+        if (fusionMode.value === 'quorum') {
+          if (!Number.isFinite(q) || q < 1 || q > 10 || Math.floor(q) !== q) {
+            setFieldError(quorumWrap, errQuorum, t('settings.val_quorum', 'Enter a whole number between 1 and 10.'));
+            ok = false;
+          }
+        }
+        if (!Number.isFinite(home) || home < 0 || home > 120) {
+          setFieldError(delayHomeWrap, errDelayHome, t('settings.val_delay_home', 'Use a value between 0 and 120 seconds.'));
+          ok = false;
+        }
+        if (!Number.isFinite(away) || away < 60 || away > 3600) {
+          setFieldError(delayAwayWrap, errDelayAway, t('settings.val_delay_away', 'Use a value between 60 and 3600 seconds.'));
+          ok = false;
+        }
+        return ok;
+      }
+
+      function confirmAction(message) {
+        return new Promise(function (resolve) {
+          try {
+            Homey.confirm(message, 'warning', function (err, ok) {
+              resolve(!err && !!ok);
+            });
+          } catch (e) {
+            try {
+              Homey.confirm(message, function (err, ok) {
+                resolve(!err && !!ok);
+              });
+            } catch (e2) {
+              resolve(window.confirm(message));
+            }
+          }
+        });
+      }
+
+      function userById(id) {
+        return bootstrap.users.find(function (u) { return u.userId === id; }) || null;
+      }
+
+      function initial(name) {
+        var s = String(name || '?').trim();
+        return s ? s.charAt(0).toUpperCase() : '?';
+      }
+
+      function fillAvatar(el, user, on) {
+        var enabled = on !== undefined ? on : !!user.enabled;
+        el.className = 'pf-avatar ' + (enabled ? 'is-on' : 'is-off');
+        el.textContent = '';
+        el.innerHTML = '';
+        if (user && user.avatar) {
+          el.classList.add('has-img');
+          var img = document.createElement('img');
+          img.src = user.avatar;
+          img.alt = '';
+          img.referrerPolicy = 'no-referrer';
+          img.addEventListener('error', function () {
+            el.classList.remove('has-img');
+            el.innerHTML = '';
+            el.textContent = initial(user.name);
+          });
+          el.appendChild(img);
+          return;
+        }
+        el.textContent = initial(user && user.name);
+      }
+
+      function personSubtitle(u) {
+        if (!u.enabled) return t('settings.enable_to_configure', 'Turn on to configure. Setup is kept.');
+        return (u.linkedCount || 0) + ' ' + t('settings.sources_count', 'source(s)');
+      }
+
+      function statusChipHtml(u) {
+        if (!u.enabled) {
+          return '<span class="pf-chip is-off"><span class="pf-dot"></span>' + t('settings.off', 'Off') + '</span>';
+        }
+        if (u.home === true) {
+          return '<span class="pf-chip is-home"><span class="pf-dot"></span>' + t('settings.state_home', 'Home') + '</span>';
+        }
+        if (u.home === false) {
+          return '<span class="pf-chip is-away"><span class="pf-dot"></span>' + t('settings.state_away', 'Away') + '</span>';
+        }
+        return '<span class="pf-chip is-on"><span class="pf-dot"></span>' + t('settings.on', 'On') + '</span>';
+      }
+
+      function statusDotClass(u) {
+        if (!u.enabled) return 'is-off';
+        if (u.home === true) return 'is-home';
+        if (u.home === false) return 'is-away';
+        return 'is-off';
+      }
+
+      function setLinkEnabled(on) {
+        linkBtn.disabled = !on;
+        linkBtn.classList.toggle('is-disabled', !on);
+      }
+
+      function showHub(tab) {
+        screen = 'hub';
+        hubTab = tab || hubTab || 'people';
+        viewHub.classList.remove('pf-hidden');
+        viewPerson.classList.add('pf-hidden');
+        mainHeader.classList.remove('pf-hidden');
+        document.querySelectorAll('.pf-nav-btn').forEach(function (btn) {
+          btn.classList.toggle('is-active', btn.getAttribute('data-hub') === hubTab);
+        });
+        document.getElementById('panel-people').classList.toggle('pf-hidden', hubTab !== 'people');
+        document.getElementById('panel-help').classList.toggle('pf-hidden', hubTab !== 'help');
+      }
+
+      function showSegment(seg) {
+        currentSeg = seg;
+        segSources.classList.toggle('is-active', seg === 'sources');
+        segRules.classList.toggle('is-active', seg === 'rules');
+        segPanelSources.classList.toggle('pf-hidden', seg !== 'sources');
+        segPanelRules.classList.toggle('pf-hidden', seg !== 'rules');
+      }
+
+      function openPerson(userId, seg) {
+        var user = userById(userId);
+        if (!user || !user.enabled) return;
+        selectedUserId = userId;
+        screen = 'person';
+        viewHub.classList.add('pf-hidden');
+        viewPerson.classList.remove('pf-hidden');
+        mainHeader.classList.add('pf-hidden');
+        renderPersonChrome(user);
+        showSegment(seg || 'sources');
+        renderSources();
+        renderRules();
+        showCandidatesHint(t('settings.type_to_search', 'Type at least 2 letters to search.'));
+      }
+
+      function renderPersonChrome(user) {
+        fillAvatar(personAvatar, user, true);
+        personName.textContent = user.name;
+        personMeta.innerHTML = statusChipHtml(user) + '<span>' + personSubtitle(user) + '</span>';
+      }
+
+      function renderPeople() {
+        peopleList.innerHTML = '';
+        if (!bootstrap.users.length) {
+          peopleList.className = '';
+          var empty = document.createElement('div');
+          empty.className = 'pf-empty';
+          empty.innerHTML = '<p>' + t('settings.info_no_users_text', 'Create Homey users first, then reopen these settings.') + '</p>';
+          peopleList.appendChild(empty);
+          return;
+        }
+        peopleList.className = 'pf-group';
+
+        bootstrap.users.forEach(function (u) {
+          var row = document.createElement('div');
+          row.className = 'pf-row';
+
+          var avatar = document.createElement('div');
+          fillAvatar(avatar, u);
+
+          var body = document.createElement('div');
+          body.className = 'pf-row-body';
+          var title = document.createElement('p');
+          title.className = 'pf-row-title';
+          title.textContent = u.name;
+          var sub = document.createElement('p');
+          sub.className = 'pf-row-sub';
+          sub.innerHTML = statusChipHtml(u) + '<span>' + personSubtitle(u) + '</span>';
+          body.appendChild(title);
+          body.appendChild(sub);
+
+          var aside = document.createElement('div');
+          aside.className = 'pf-row-aside';
+
+          var actionSlot = document.createElement('div');
+          actionSlot.className = 'pf-row-action';
+          if (u.enabled) {
+            var cfg = document.createElement('button');
+            cfg.type = 'button';
+            cfg.className = 'pf-btn-config';
+            cfg.innerHTML = t('settings.configure', 'Configure')
+              + '<svg class="pf-icon" width="13" height="13"><use href="#i-chevron"/></svg>';
+            cfg.addEventListener('click', function (e) {
+              e.stopPropagation();
+              openPerson(u.userId, 'sources');
+            });
+            actionSlot.appendChild(cfg);
+          }
+          aside.appendChild(actionSlot);
+
+          var sw = document.createElement('label');
+          sw.className = 'pf-switch';
+          sw.addEventListener('click', function (e) { e.stopPropagation(); });
+          var input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = !!u.enabled;
+          input.setAttribute('role', 'switch');
+          input.setAttribute('aria-label', u.name);
+          input.addEventListener('change', function () {
+            toggleUser(u.userId, input.checked, input);
+          });
+          var slider = document.createElement('span');
+          slider.className = 'pf-switch-slider';
+          sw.appendChild(input);
+          sw.appendChild(slider);
+          aside.appendChild(sw);
+
+          row.appendChild(avatar);
+          row.appendChild(body);
+          row.appendChild(aside);
+          peopleList.appendChild(row);
+        });
+      }
+
+      function renderSources() {
+        var user = userById(selectedUserId);
+        if (!user || !user.enabled) return;
+
+        var links = Object.entries(user.linkedDevices || {}).map(function (entry) {
+          var key = entry[0];
+          var link = entry[1] || {};
+          return Object.assign({}, link, { id: link.id || key, _key: key });
+        });
+        linksEl.innerHTML = '';
+        linksEmpty.classList.toggle('pf-hidden', links.length > 0);
+        links.forEach(function (link) {
+          var li = document.createElement('li');
+          li.className = 'pf-source';
+          li.dataset.linkId = link.id || link._key;
+
+          var top = document.createElement('div');
+          top.className = 'pf-source-top';
+
+          var main = document.createElement('div');
+          main.className = 'pf-row-body';
+          var title = document.createElement('p');
+          title.className = 'pf-row-title';
+          title.textContent = link.label || link.deviceName;
+          main.appendChild(title);
+          if (link.deviceName && link.deviceName !== title.textContent) {
+            var meta = document.createElement('p');
+            meta.className = 'pf-row-sub';
+            meta.textContent = link.deviceName;
+            main.appendChild(meta);
+          }
+
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'pf-icon-btn';
+          btn.setAttribute('aria-label', t('settings.unlink', 'Remove'));
+          btn.innerHTML = '<svg class="pf-icon is-danger" width="20" height="20"><use href="#i-delete"/></svg>';
+          btn.addEventListener('click', function () {
+            unlink(link.id || link._key);
+          });
+          top.appendChild(main);
+          top.appendChild(btn);
+
+          var capBlock = document.createElement('div');
+          capBlock.className = 'pf-source-cap';
+
+          var capLine = document.createElement('p');
+          capLine.className = 'pf-source-cap-line';
+          var isAuto = link.capabilityAuto !== false;
+          var capHtml = t('settings.capability_label', 'Capability')
+            + ' · <code>' + escapeHtml(link.capability || '—') + '</code>';
+          if (link.invert) {
+            capHtml += ' · <span class="pf-cap-tag">'
+              + escapeHtml(t('settings.capability_inverted', 'inverted'))
+              + '</span>';
+          }
+          capLine.innerHTML = capHtml;
+
+          var hint = document.createElement('p');
+          hint.className = 'pf-source-cap-hint';
+          hint.textContent = isAuto
+            ? t('settings.capability_auto_hint', 'Auto-detected — change it if needed.')
+            : t('settings.capability_manual_hint', 'Chosen manually.');
+
+          var actions = document.createElement('div');
+          actions.className = 'pf-source-actions';
+          var editBtn = document.createElement('button');
+          editBtn.type = 'button';
+          editBtn.className = 'pf-source-edit';
+          editBtn.innerHTML = t('settings.capability_edit', 'Edit')
+            + '<svg class="pf-icon" width="12" height="12"><use href="#i-chevron"/></svg>';
+          actions.appendChild(editBtn);
+
+          var adv = document.createElement('div');
+          adv.className = 'pf-source-adv pf-hidden';
+
+          editBtn.addEventListener('click', function () {
+            var opening = adv.classList.contains('pf-hidden');
+            document.querySelectorAll('.pf-source-adv').forEach(function (el) {
+              el.classList.add('pf-hidden');
+            });
+            document.querySelectorAll('.pf-source-edit').forEach(function (el) {
+              el.classList.remove('is-open');
+            });
+            if (opening) {
+              adv.classList.remove('pf-hidden');
+              editBtn.classList.add('is-open');
+              openCapabilityEditor(adv, link);
+            }
+          });
+
+          capBlock.appendChild(capLine);
+          capBlock.appendChild(hint);
+          capBlock.appendChild(actions);
+          capBlock.appendChild(adv);
+
+          li.appendChild(top);
+          li.appendChild(capBlock);
+          linksEl.appendChild(li);
+        });
+        setLinkEnabled(false);
+      }
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function openCapabilityEditor(advEl, link) {
+        advEl.innerHTML = '<p class="pf-field-hint">' +
+          t('settings.capability_loading', 'Loading capabilities…') + '</p>';
+
+        api('GET', '/linking/capabilities?deviceId=' + encodeURIComponent(link.deviceId))
+          .then(function (result) {
+            var caps = (result && result.capabilities) || [];
+            if (link.capability && caps.indexOf(link.capability) === -1) {
+              caps = [link.capability].concat(caps);
+            }
+            if (!caps.length) {
+              advEl.innerHTML = '<p class="pf-field-hint">' +
+                t('settings.err_capability', 'Could not read a suitable capability on this device.') + '</p>';
+              return;
+            }
+
+            advEl.innerHTML = '';
+            var inner = document.createElement('div');
+            inner.className = 'pf-source-adv-inner';
+
+            var group = document.createElement('div');
+            group.className = 'homey-form-group';
+            var label = document.createElement('label');
+            label.className = 'homey-form-label';
+            label.textContent = t('settings.capability_label', 'Capability');
+            var select = document.createElement('select');
+            select.className = 'homey-form-select';
+            var suggested = (result && result.suggested) || link.capability || caps[0];
+            var isAuto = link.capabilityAuto !== false;
+            var autoOpt = document.createElement('option');
+            autoOpt.value = 'auto';
+            autoOpt.textContent = t('settings.capability_auto_option', 'Automatic')
+              + (suggested ? ' (' + suggested + ')' : '');
+            if (isAuto) autoOpt.selected = true;
+            select.appendChild(autoOpt);
+            caps.forEach(function (cap) {
+              var opt = document.createElement('option');
+              opt.value = cap;
+              opt.textContent = cap;
+              if (!isAuto && cap === link.capability) opt.selected = true;
+              select.appendChild(opt);
+            });
+            group.appendChild(label);
+            group.appendChild(select);
+
+            var toggle = document.createElement('div');
+            toggle.className = 'pf-source-toggle';
+            var toggleLabel = document.createElement('p');
+            toggleLabel.className = 'pf-source-toggle-label';
+            toggleLabel.textContent = t('settings.capability_invert', 'Invert logic');
+            var sw = document.createElement('label');
+            sw.className = 'pf-switch';
+            var invert = document.createElement('input');
+            invert.type = 'checkbox';
+            invert.checked = !!link.invert;
+            invert.setAttribute('role', 'switch');
+            invert.setAttribute('aria-label', t('settings.capability_invert', 'Invert logic'));
+            var slider = document.createElement('span');
+            slider.className = 'pf-switch-slider';
+            sw.appendChild(invert);
+            sw.appendChild(slider);
+            toggle.appendChild(toggleLabel);
+            toggle.appendChild(sw);
+
+            var save = document.createElement('button');
+            save.type = 'button';
+            save.className = 'pf-source-save';
+            save.textContent = t('settings.capability_save', 'Save');
+            save.addEventListener('click', function () {
+              saveCapability(link.id || link._key, select.value, invert.checked, save);
+            });
+
+            inner.appendChild(group);
+            inner.appendChild(toggle);
+            inner.appendChild(save);
+            advEl.appendChild(inner);
+          })
+          .catch(function (err) {
+            advEl.innerHTML = '<p class="pf-field-hint">' + escapeHtml(friendlyError(err)) + '</p>';
+          });
+      }
+
+      function saveCapability(linkId, capability, invert, btn) {
+        var user = userById(selectedUserId);
+        if (!user) return;
+        if (btn) {
+          btn.disabled = true;
+          btn.classList.add('is-loading');
+        }
+        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_capability', 'Updating capability…'));
+        api('POST', '/linking/update', {
+          userId: user.userId,
+          linkId: linkId,
+          capability: capability,
+          invert: !!invert,
+        })
+          .then(function (result) {
+            if (result && result.bootstrap) bootstrap = result.bootstrap;
+            notifySuccess(
+              t('settings.capability_saved_title', 'Capability updated'),
+              capability
+            );
+            renderPersonChrome(userById(selectedUserId) || user);
+            renderSources();
+          })
+          .catch(function (err) {
+            notifyError(t('settings.capability_failed_title', 'Couldn’t update'), friendlyError(err));
+          })
+          .then(function () {
+            if (btn) {
+              btn.disabled = false;
+              btn.classList.remove('is-loading');
+            }
+          });
+      }
+
+      function renderRules() {
+        var user = userById(selectedUserId);
+        if (!user || !user.enabled) return;
+        fusionMode.value = user.fusionMode || 'or';
+        quorumN.value = user.quorumN || 2;
+        delayHome.value = user.delayHomeSec != null ? user.delayHomeSec : 15;
+        delayAway.value = user.delayAwaySec != null ? user.delayAwaySec : 600;
+        quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
+        clearRulesErrors();
+      }
+
+      function showCandidatesHint(msg) {
+        candidates = [];
+        selectedDeviceId = null;
+        candidatesEl.innerHTML = '';
+        if (candidatesWrap) candidatesWrap.classList.add('pf-hidden');
+        if (candidatesFrame) {
+          candidatesFrame.classList.remove('is-scrollable', 'is-at-end');
+        }
+        candidatesHint.classList.remove('pf-hidden');
+        candidatesHint.textContent = msg;
+        setLinkEnabled(false);
+      }
+
+      function updateCandidatesScrollHint() {
+        if (!candidatesFrame || !candidatesEl) return;
+        var canScroll = candidatesEl.scrollHeight > candidatesEl.clientHeight + 2;
+        var atEnd = candidatesEl.scrollTop + candidatesEl.clientHeight >= candidatesEl.scrollHeight - 4;
+        candidatesFrame.classList.toggle('is-scrollable', canScroll);
+        candidatesFrame.classList.toggle('is-at-end', !canScroll || atEnd);
+      }
+
+      function renderCandidates() {
+        candidatesEl.innerHTML = '';
+        if (!candidates.length) {
+          showCandidatesHint(t('settings.no_candidates', 'No results'));
+          return;
+        }
+        candidatesHint.classList.add('pf-hidden');
+        if (candidatesWrap) candidatesWrap.classList.remove('pf-hidden');
+        candidates.forEach(function (d) {
+          var selected = d.id === selectedDeviceId;
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'pf-result' + (selected ? ' is-selected' : '');
+
+          var body = document.createElement('div');
+          body.className = 'pf-result-body';
+          var title = document.createElement('p');
+          title.className = 'pf-row-title';
+          title.textContent = d.name;
+          var meta = document.createElement('p');
+          meta.className = 'pf-row-sub';
+          var bits = [];
+          if (d.zoneName) bits.push(escapeHtml(d.zoneName));
+          if (d.capability) bits.push('<code>' + escapeHtml(d.capability) + '</code>');
+          meta.innerHTML = bits.join(' · ') || '—';
+          body.appendChild(title);
+          body.appendChild(meta);
+
+          var check = document.createElement('span');
+          check.className = 'pf-result-check';
+          check.setAttribute('aria-hidden', 'true');
+          check.innerHTML = '<svg class="pf-icon"><use href="#i-check"/></svg>';
+
+          btn.appendChild(body);
+          btn.appendChild(check);
+          btn.addEventListener('click', function () {
+            selectedDeviceId = d.id;
+            renderCandidates();
+          });
+          candidatesEl.appendChild(btn);
+        });
+        var user = userById(selectedUserId);
+        setLinkEnabled(!!(user && user.enabled && selectedDeviceId) && !busy);
+        requestAnimationFrame(updateCandidatesScrollHint);
+      }
+
+      function applyBootstrap(data) {
+        bootstrap = data || { users: [] };
+        renderPeople();
+
+        if (screen === 'person') {
+          var still = userById(selectedUserId);
+          if (!still || !still.enabled) {
+            selectedUserId = null;
+            showHub('people');
+          } else {
+            renderPersonChrome(still);
+            renderSources();
+            renderRules();
+          }
+        }
+      }
+
+      function load() {
+        viewLoading.classList.remove('pf-hidden');
+        viewMain.classList.add('pf-hidden');
+        loadError.classList.add('pf-hidden');
+        loadRetryWrap.classList.add('pf-hidden');
+        return api('GET', '/bootstrap')
+          .then(function (data) {
+            applyBootstrap(data);
+            viewLoading.classList.add('pf-hidden');
+            viewMain.classList.remove('pf-hidden');
+            showHub('people');
+            hideBanner();
+            if (!bootstrap.users.length) {
+              notifyInfo(
+                t('settings.info_no_users_title', 'No Homey users found'),
+                t('settings.info_no_users_text', 'Create Homey users first, then reopen these settings.')
+              );
+            }
+          })
+          .catch(function (err) {
+            loadErrorText.textContent = friendlyError(err);
+            loadError.classList.remove('pf-hidden');
+            loadRetryWrap.classList.remove('pf-hidden');
+          });
+      }
+
+      function doSetEnabled(userId, enabled) {
+        var user = userById(userId);
+        busy = true;
+        notifyInfo(
+          t('settings.working_title', 'Updating…'),
+          enabled
+            ? t('settings.working_enable', 'Enabling Fusion for this person.')
+            : t('settings.working_disable', 'Disabling Fusion for this person.')
+        );
+        return api('POST', '/users/enabled', { userId: userId, enabled: enabled })
+          .then(function (res) {
+            applyBootstrap(res.bootstrap);
+            var name = (user && user.name) || t('settings.this_person', 'this person');
+            notifySuccess(
+              enabled ? t('settings.enabled_title', 'Fusion enabled') : t('settings.disabled_title', 'Fusion disabled'),
+              enabled
+                ? t('settings.enabled_text', 'Sources can now update native presence for') + ' ' + name + '.'
+                : t('settings.disabled_kept_text', 'Fusion stopped. Sources and rules are kept for') + ' ' + name + '.'
+            );
+          })
+          .catch(function (err) {
+            notifyError(t('settings.error_title', 'Couldn’t update'), friendlyError(err));
+            return load();
+          })
+          .then(function () { busy = false; });
+      }
+
+      function toggleUser(userId, enabled, inputEl) {
+        if (busy) {
+          if (inputEl) inputEl.checked = !enabled;
+          return;
+        }
+        var user = userById(userId);
+        var name = (user && user.name) || t('settings.this_person', 'this person');
+
+        if (!enabled) {
+          confirmAction(
+            t('settings.confirm_disable', 'Disable Fusion for this person?')
+            + '\n\n' + name + '\n'
+            + t('settings.confirm_disable_keep', 'Sources and rules are kept. You can turn Fusion back on later.')
+          ).then(function (ok) {
+            if (!ok) {
+              if (inputEl) inputEl.checked = true;
+              return;
+            }
+            return doSetEnabled(userId, false);
+          });
+          return;
+        }
+        doSetEnabled(userId, true);
+      }
+
+      function loadCandidates() {
+        var q = (searchEl.value || '').trim();
+        if (q.length < 2) {
+          showCandidatesHint(t('settings.type_to_search', 'Type at least 2 letters to search.'));
+          return;
+        }
+        var seq = ++searchSeq;
+        candidatesHint.classList.remove('pf-hidden');
+        candidatesHint.textContent = t('settings.loading', 'Searching…');
+        candidatesEl.innerHTML = '';
+        if (candidatesWrap) candidatesWrap.classList.add('pf-hidden');
+        api('GET', '/linking/candidates?q=' + encodeURIComponent(q))
+          .then(function (result) {
+            if (seq !== searchSeq) return;
+            candidates = (result && result.items) || [];
+            if (!candidates.length) showCandidatesHint(t('settings.no_candidates', 'No devices match this search.'));
+            else renderCandidates();
+          })
+          .catch(function (err) {
+            if (seq !== searchSeq) return;
+            showCandidatesHint(t('settings.search_error', 'Search failed. Try again.'));
+            notifyError(t('settings.search_error_title', 'Search failed'), friendlyError(err));
+          });
+      }
+
+      function link() {
+        var user = userById(selectedUserId);
+        var device = candidates.find(function (d) { return d.id === selectedDeviceId; });
+        if (!user || !device || busy) return;
+        if (!user.enabled) {
+          notifyWarning(t('settings.enable_first_title', 'Person disabled'), t('settings.enable_first', 'Enable this person first.'));
+          return;
+        }
+        busy = true;
+        linkBtn.classList.add('is-loading');
+        setLinkEnabled(false);
+        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_link', 'Linking device…'));
+        api('POST', '/linking', {
+          userId: user.userId,
+          deviceId: device.id,
+          capability: device.capability || 'auto',
+          label: device.name,
+          capabilityAuto: true,
+        })
+          .then(function (res) {
+            applyBootstrap(res.bootstrap);
+            selectedDeviceId = null;
+            searchEl.value = '';
+            showCandidatesHint(t('settings.type_to_search', 'Type at least 2 letters to search.'));
+            notifySuccess(t('settings.linked_title', 'Device linked'), device.name + ' → ' + user.name);
+          })
+          .catch(function (err) {
+            notifyError(t('settings.link_failed_title', 'Couldn’t link device'), friendlyError(err));
+            setLinkEnabled(true);
+          })
+          .then(function () {
+            busy = false;
+            linkBtn.classList.remove('is-loading');
+          });
+      }
+
+      function unlink(linkId) {
+        var user = userById(selectedUserId);
+        if (!user || busy) return;
+        var link = (user.linkedDevices && user.linkedDevices[linkId]) || null;
+        if (!link && user.linkedDevices) {
+          var found = Object.entries(user.linkedDevices).find(function (entry) {
+            var l = entry[1];
+            return l && (l.id === linkId || entry[0] === linkId);
+          });
+          if (found) {
+            linkId = found[0];
+            link = found[1];
+          }
+        }
+        var label = (link && (link.label || link.deviceName)) || t('settings.this_source', 'this source');
+        confirmAction(t('settings.confirm_unlink', 'Remove this source?') + '\n' + label)
+          .then(function (ok) {
+            if (!ok) return;
+            busy = true;
+            notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_unlink', 'Removing source…'));
+            return api('POST', '/linking/unlink', { userId: user.userId, linkId: linkId })
+              .then(function (res) {
+                applyBootstrap(res.bootstrap);
+                notifySuccess(t('settings.unlinked_title', 'Source removed'), label);
+              })
+              .catch(function (err) {
+                notifyError(t('settings.unlink_failed_title', 'Couldn’t remove source'), friendlyError(err));
+              })
+              .then(function () { busy = false; });
+          });
+      }
+
+      function saveRules() {
+        var user = userById(selectedUserId);
+        if (!user || busy) return;
+        if (!validateRules()) {
+          notifyWarning(t('settings.val_title', 'Check the values'), t('settings.val_text', 'Fix the highlighted fields, then save again.'));
+          return;
+        }
+        busy = true;
+        saveRulesBtn.classList.add('is-loading');
+        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_save', 'Saving rules…'));
+        api('POST', '/users/rules', {
+          userId: user.userId,
+          rules: {
+            fusionMode: fusionMode.value,
+            quorumN: Number(quorumN.value),
+            delayHomeSec: Number(delayHome.value),
+            delayAwaySec: Number(delayAway.value),
+          },
+        })
+          .then(function (res) {
+            applyBootstrap(res.bootstrap);
+            notifySuccess(t('settings.saved_title', 'Rules saved'), t('settings.saved_text', 'Applied for') + ' ' + user.name + '.');
+          })
+          .catch(function (err) {
+            notifyError(t('settings.save_failed_title', 'Couldn’t save rules'), friendlyError(err));
+          })
+          .then(function () {
+            busy = false;
+            saveRulesBtn.classList.remove('is-loading');
+          });
+      }
+
+      document.querySelectorAll('.pf-nav-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          showHub(btn.getAttribute('data-hub'));
+        });
+      });
+      btnBack.addEventListener('click', function () { showHub('people'); });
+      segSources.addEventListener('click', function () { showSegment('sources'); });
+      segRules.addEventListener('click', function () {
+        showSegment('rules');
+        renderRules();
+      });
+      fusionMode.addEventListener('change', function () {
+        quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
+        clearRulesErrors();
+      });
+      [quorumN, delayHome, delayAway].forEach(function (el) {
+        el.addEventListener('input', clearRulesErrors);
+      });
+      searchEl.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(loadCandidates, 280);
+      });
+      if (candidatesEl) {
+        candidatesEl.addEventListener('scroll', updateCandidatesScrollHint, { passive: true });
+      }
+      linkBtn.addEventListener('click', link);
+      saveRulesBtn.addEventListener('click', saveRules);
+      bannerClose.addEventListener('click', hideBanner);
+      btnRetry.addEventListener('click', load);
+
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
+        el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder'), el.placeholder));
+      });
+
+      Homey.ready();
+      load();
+    }
+  </script>
+</body>
+
+</html>
