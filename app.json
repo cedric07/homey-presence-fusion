@@ -19,7 +19,7 @@
   "category": [
     "tools"
   ],
-  "brandColor": "#2F80ED",
+  "brandColor": "#09225F",
   "permissions": [
     "homey:manager:api"
   ],

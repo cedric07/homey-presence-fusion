@@ -8,8 +8,14 @@
   <style>
     /* iOS Settings–inspired · light forced (Homey dark must not win) */
     :root {
-      --pf-blue: #007aff;
-      --pf-blue-fill: #007aff;
+      /* Align with app brandColor (#09225F) */
+      --pf-blue: #09225F;
+      --pf-blue-fill: #09225F;
+      --pf-blue-rgb: 9, 34, 95;
+      --pf-blue-soft: #EEF1F8;
+      --pf-blue-soft-2: #E4EAF4;
+      --pf-blue-well: #E8ECF5;
+      --pf-blue-ink: #3A4F73;
       --pf-green: #34c759;
       --pf-orange: #ff9500;
       --pf-red: #ff3b30;
@@ -211,8 +217,8 @@
       margin: 0 0 14px;
       padding: 12px 14px;
       border-radius: var(--pf-radius-lg);
-      background: linear-gradient(180deg, #f0f7ff 0%, #eaf3ff 100%);
-      border: 1px solid rgba(0, 122, 255, 0.14);
+      background: linear-gradient(180deg, var(--pf-blue-soft) 0%, var(--pf-blue-soft-2) 100%);
+      border: 1px solid rgba(var(--pf-blue-rgb), 0.14);
       box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset;
     }
 
@@ -240,7 +246,7 @@
       padding-top: 3px;
       font-size: 0.86em;
       line-height: 1.4;
-      color: #3a5a80 !important;
+      color: var(--pf-blue-ink) !important;
       letter-spacing: -0.01em;
     }
 
@@ -433,7 +439,7 @@
 
     .pf-avatar.is-off,
     .pf-well.is-blue {
-      background: #e8f1ff;
+      background: var(--pf-blue-well);
       color: var(--pf-blue) !important;
     }
 
@@ -486,7 +492,7 @@
     }
 
     .pf-chip.is-on {
-      background: #e8f1ff;
+      background: var(--pf-blue-well);
       color: var(--pf-blue) !important;
     }
 
@@ -932,7 +938,7 @@
     }
 
     .pf-result.is-selected {
-      background: #f0f7ff !important;
+      background: var(--pf-blue-soft) !important;
     }
 
     .pf-result.is-selected .pf-result-check {
@@ -941,15 +947,15 @@
     }
 
     .pf-result:hover {
-      background: #f0f7ff !important;
+      background: var(--pf-blue-soft) !important;
     }
 
     .pf-result.is-selected:hover {
-      background: #e5f0ff !important;
+      background: var(--pf-blue-soft-2) !important;
     }
 
     .pf-result:active {
-      background: #e5f0ff !important;
+      background: var(--pf-blue-soft-2) !important;
     }
 
     .pf-add-actions {
@@ -1093,7 +1099,7 @@
     }
 
     .pf-banner.is-info {
-      background: #e8f1ff !important;
+      background: var(--pf-blue-well) !important;
     }
 
     .pf-banner.is-warning {
@@ -1181,7 +1187,7 @@
     }
 
     .pf-switch input:focus-visible+.pf-switch-slider {
-      outline: 2px solid rgba(0, 122, 255, 0.45);
+      outline: 2px solid rgba(var(--pf-blue-rgb), 0.45);
       outline-offset: 2px;
     }
 
