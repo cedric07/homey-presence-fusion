@@ -32,6 +32,40 @@
     "name": "Cédric Andrietti",
     "email": "cedric.andrietti@gmail.com"
   },
+  "support": "https://github.com/cedric07/homey-presence-fusion/issues",
+  "source": "https://github.com/cedric07/homey-presence-fusion",
+  "bugs": {
+    "url": "https://github.com/cedric07/homey-presence-fusion/issues"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "CedricAndrietti"
+      }
+    }
+  },
+  "tags": {
+    "en": [
+      "presence",
+      "fusion",
+      "wifi",
+      "beacon",
+      "bluetooth",
+      "smart presence",
+      "home",
+      "away"
+    ],
+    "fr": [
+      "présence",
+      "fusion",
+      "wifi",
+      "beacon",
+      "bluetooth",
+      "smart presence",
+      "maison",
+      "absent"
+    ]
+  },
   "api": {
     "getBootstrap": {
       "method": "GET",
