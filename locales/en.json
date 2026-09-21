@@ -61,12 +61,15 @@
     "quorum_n": "Quorum N",
     "delay_home": "Confirm home (seconds)",
     "delay_away": "Confirm away (seconds)",
+    "delay_hint": "These delays add on top of any debounce already set on Smart Presence, Beacon, etc. If a source already waits before going away, keep Fusion’s away delay low.",
     "save_rules": "Save rules",
     "v2_title": "Coming in V2",
     "v2_forced": "Forced presence (override sources).",
     "v2_sleep": "Native asleep management.",
     "help_geo_title": "Location presence",
     "help_geo": "Turn OFF Homey location-based presence for every managed user. Otherwise Homey and Presence Fusion overwrite each other.",
+    "help_writers_title": "Other presence writers",
+    "help_writers": "Don’t use Flows (or other apps) that set the same user’s presence. Fusion should be the only writer for managed people — otherwise they overwrite each other.",
     "help_how_title": "How it works",
     "help_how_1": "Enable a person",
     "help_how_2": "Link devices (phone, Nut, Beacon…)",
@@ -117,6 +120,10 @@
     "home": "Home",
     "away": "Away",
     "since": "Since",
-    "confirming": "Confirming…"
+    "arrival": "Arrival",
+    "departure": "Departure",
+    "at": "at",
+    "source_home": "Detected",
+    "source_away": "Not detected"
   }
 }

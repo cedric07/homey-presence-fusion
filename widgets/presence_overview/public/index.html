@@ -1,30 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    html, body { margin: 0; padding: 0; background: transparent; }
-    .list { display: flex; flex-direction: column; gap: var(--homey-su-2); }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+    }
+
     .row {
       display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+      align-items: center;
       gap: var(--homey-su-3);
-      padding-bottom: var(--homey-su-2);
+      padding: var(--homey-su-3) 0;
+      min-width: 0;
       border-bottom: var(--homey-line-light);
+      box-sizing: border-box;
     }
-    .row:last-child { border-bottom: none; padding-bottom: 0; }
-    .left { min-width: 0; flex: 1; }
-    .name { margin: 0; }
-    .meta { margin: 2px 0 0; color: var(--homey-text-color-light); }
-    .pill-home { color: var(--homey-text-color-success); }
-    .pill-away { color: var(--homey-text-color-light); }
-    .pending { color: var(--homey-text-color-warning); }
-    .empty { color: var(--homey-text-color-light); }
+
+    .row:first-child {
+      padding-top: 0;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex: 0 0 48px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      background: var(--homey-color-mono-200);
+    }
+
+    .avatar-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--homey-font-size-default);
+      font-weight: var(--homey-font-weight-bold);
+      line-height: 1;
+      color: var(--homey-text-color-light);
+      background: var(--homey-color-mono-200);
+    }
+
+    .dot {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 2px solid var(--homey-background-color);
+      background: var(--homey-color-mono-400);
+    }
+
+    .dot.is-home {
+      background: var(--homey-color-success);
+    }
+
+    .dot.is-away {
+      background: var(--homey-color-mono-400);
+    }
+
+    .dot.is-unknown {
+      background: var(--homey-color-mono-300);
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--homey-su-2);
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 2px 8px;
+      border-radius: var(--homey-border-radius-small);
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-bold);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-white);
+    }
+
+    .badge.is-home {
+      background: var(--homey-color-success);
+    }
+
+    .badge.is-away {
+      background: var(--homey-color-mono-400);
+    }
+
+    .badge.is-unknown {
+      background: var(--homey-color-mono-300);
+    }
+
+    .when {
+      margin: 2px 0 0;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-regular);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-light);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .when strong {
+      font-weight: var(--homey-font-weight-medium);
+      color: var(--homey-text-color);
+    }
+
+    .sources {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .source {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--homey-su-2);
+      min-width: 0;
+    }
+
+    .source-name {
+      margin: 0;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-regular);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-light);
+    }
+
+    .source-state {
+      margin: 0;
+      flex: 0 0 auto;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-medium);
+      line-height: var(--homey-line-height-small);
+    }
+
+    .source-state.is-home {
+      color: var(--homey-text-color-success);
+    }
+
+    .source-state.is-away {
+      color: var(--homey-text-color-light);
+    }
+
+    .source-state.is-unknown {
+      color: var(--homey-text-color-light);
+    }
+
+    .empty {
+      margin: 0;
+      padding: var(--homey-su-4) 0;
+      text-align: center;
+      color: var(--homey-text-color-light);
+    }
   </style>
 </head>
-<body class="homey-widget-small">
+
+<body class="homey-widget">
   <div id="root" class="list">
     <p class="homey-text-small empty" id="loading">…</p>
   </div>
@@ -32,7 +216,18 @@
     function onHomeyReady(Homey) {
       var root = document.getElementById('root');
       var settings = Homey.getSettings() || {};
+      var showTransition = settings.show_transition !== false;
       var showSources = settings.show_sources !== false;
+
+      // Deterministic layout heights (px) — keep in sync with CSS above
+      var PAD_Y = 32;       // .homey-widget top+bottom (--homey-su-4 × 2)
+      var ROW_SEP = 24;     // meeting paddings between two rows (--homey-su-3 × 2)
+      var H_ROW = 48;       // avatar + head (+ when fits in this budget)
+      var H_WHEN = 20;      // .when — only subtracted when transition is hidden
+      var H_SOURCE = 16;    // .source line-height (small text)
+      var H_SOURCE_GAP = 2; // gap between source rows
+      var H_SOURCES_TOP = 2; // .sources margin-top (slightly under CSS 4px)
+      var H_EMPTY = 80;
 
       function t(key, fallback) {
         try {
@@ -41,63 +236,157 @@
         } catch (e) { return fallback; }
       }
 
-      function formatWhen(ts) {
-        if (!ts) return '';
-        try {
-          return new Date(ts).toLocaleString(undefined, {
-            day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
-          });
-        } catch (e) { return ''; }
-      }
-
-      function formatSources(sources) {
-        var entries = Object.entries(sources || {});
-        if (!entries.length) return '';
-        return entries.map(function (e) {
-          return e[0] + ':' + ((e[1] && e[1].state) || '?');
-        }).join(' · ');
-      }
-
       function escapeHtml(s) {
         return String(s || '')
           .replace(/&/g, '&amp;').replace(/</g, '&lt;')
           .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
+      function formatWhen(ts) {
+        if (!ts) return '—';
+        try {
+          var d = new Date(ts);
+          var date = d.toLocaleDateString(undefined, {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+          var time = d.toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          return date + ' ' + t('widget.at', 'at') + ' ' + time;
+        } catch (e) { return '—'; }
+      }
+
+      function sourceEntries(person) {
+        var linked = person.linkedDevices || {};
+        var runtime = person.presenceSources || {};
+        var links = Object.values(linked);
+        if (links.length) {
+          return links.map(function (link) {
+            var label = String(link.label || link.deviceName || link.id || 'source').trim() || 'source';
+            var st = runtime[label];
+            var state = (st && st.state) || 'unknown';
+            if (state !== 'home' && state !== 'away') state = 'unknown';
+            return { label: label, state: state };
+          });
+        }
+        return Object.keys(runtime).map(function (label) {
+          var st = runtime[label];
+          var state = (st && st.state) || 'unknown';
+          if (state !== 'home' && state !== 'away') state = 'unknown';
+          return { label: label, state: state };
+        });
+      }
+
+      function sourceStateLabel(state) {
+        if (state === 'home') return t('widget.source_home', 'Detected');
+        if (state === 'away') return t('widget.source_away', 'Not detected');
+        return '—';
+      }
+
+      function initials(name) {
+        var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+
+      function stateClass(home) {
+        if (home === true) return 'is-home';
+        if (home === false) return 'is-away';
+        return 'is-unknown';
+      }
+
+      function sourcesBlockHeight(count) {
+        if (!count) return 0;
+        return H_SOURCES_TOP + (count * H_SOURCE) + (Math.max(0, count - 1) * H_SOURCE_GAP);
+      }
+
+      function personHeight(person) {
+        // H_ROW already budgets head + arrival/departure beside the avatar.
+        // Without transition, drop that budget so sources aren't padded with empty space.
+        var h = H_ROW;
+        if (showSources) h += sourcesBlockHeight(sourceEntries(person).length);
+        if (!showTransition) h = Math.max(H_ROW, h - H_WHEN);
+        return h;
+      }
+
+      function totalHeight(list) {
+        if (!list.length) return H_EMPTY;
+        var height = PAD_Y;
+        for (var i = 0; i < list.length; i++) {
+          height += personHeight(list[i]);
+        }
+        if (list.length > 1) height += (list.length - 1) * ROW_SEP;
+        return height;
+      }
+
       function render(persons) {
-        if (!persons || !persons.length) {
+        var list = persons || [];
+        var height = totalHeight(list);
+
+        if (!list.length) {
           root.innerHTML = '<p class="homey-text-small empty">' +
             t('widget.empty', 'Enable a person in app settings') + '</p>';
-          Homey.ready({ height: 72 });
+          Homey.setHeight(height).catch(function () { });
+          Homey.ready({ height: height });
           return;
         }
 
-        root.innerHTML = persons.map(function (p) {
-          var homeClass = p.home ? 'pill-home' : 'pill-away';
-          var homeLabel = p.home === true
+        root.innerHTML = list.map(function (p) {
+          var sc = stateClass(p.home);
+          var statusLabel = p.home === true
             ? t('widget.home', 'Home')
             : (p.home === false ? t('widget.away', 'Away') : '—');
-          var when = formatWhen(p.lastTransitionAt);
-          var whenHtml = when
-            ? '<div class="homey-text-small meta">' + t('widget.since', 'Since') + ' ' + escapeHtml(when) + '</div>'
-            : '';
-          var pending = (p.pendingHome !== null && p.pendingHome !== undefined)
-            ? '<div class="homey-text-small pending">' + t('widget.confirming', 'Confirming…') + '</div>'
-            : '';
+          var transitionLabel = p.home === true
+            ? t('widget.arrival', 'Arrival')
+            : (p.home === false
+              ? t('widget.departure', 'Departure')
+              : t('widget.since', 'Since'));
+
+          var avatarInner = p.avatar
+            ? '<img class="avatar" src="' + escapeHtml(p.avatar) + '" alt="" />'
+            : '<div class="avatar avatar-fallback">' + escapeHtml(initials(p.name)) + '</div>';
+
+          var whenHtml = '';
+          if (showTransition) {
+            whenHtml = '<p class="when"><strong>' + escapeHtml(transitionLabel) + '</strong>' +
+              ' · ' + escapeHtml(formatWhen(p.lastTransitionAt)) + '</p>';
+          }
+
           var sourcesHtml = '';
           if (showSources) {
-            var src = formatSources(p.presenceSources);
-            if (src) sourcesHtml = '<div class="homey-text-small meta">' + escapeHtml(src) + '</div>';
+            var entries = sourceEntries(p);
+            if (entries.length) {
+              sourcesHtml = '<div class="sources">' + entries.map(function (entry) {
+                var stClass = entry.state === 'home'
+                  ? 'is-home'
+                  : (entry.state === 'away' ? 'is-away' : 'is-unknown');
+                return '<div class="source">' +
+                  '<p class="source-name">' + escapeHtml(entry.label) + '</p>' +
+                  '<p class="source-state ' + stClass + '">' +
+                  escapeHtml(sourceStateLabel(entry.state)) + '</p>' +
+                  '</div>';
+              }).join('') + '</div>';
+            }
           }
-          return '<div class="row"><div class="left">' +
+
+          return '<div class="row">' +
+            '<div class="avatar-wrap">' + avatarInner +
+            '<span class="dot ' + sc + '"></span></div>' +
+            '<div class="main">' +
+            '<div class="head">' +
             '<p class="homey-text-medium name">' + escapeHtml(p.name) + '</p>' +
-            sourcesHtml + whenHtml + pending +
-            '</div><div class="homey-text-regular"><span class="' + homeClass + '">' +
-            homeLabel + '</span></div></div>';
+            '<span class="badge ' + sc + '">' + escapeHtml(statusLabel) + '</span>' +
+            '</div>' +
+            whenHtml +
+            sourcesHtml +
+            '</div></div>';
         }).join('');
 
-        var height = Math.max(72, 28 + persons.length * (showSources ? 64 : 48));
-        Homey.setHeight(height).catch(function () {});
+        Homey.setHeight(height).catch(function () { });
         Homey.ready({ height: height });
       }
 
@@ -109,7 +398,8 @@
           .catch(function (err) {
             console.error(err);
             root.innerHTML = '<p class="homey-text-small empty">Error</p>';
-            Homey.ready({ height: 72 });
+            Homey.setHeight(H_EMPTY).catch(function () { });
+            Homey.ready({ height: H_EMPTY });
           });
       }
 
@@ -118,4 +408,5 @@
     }
   </script>
 </body>
+
 </html>

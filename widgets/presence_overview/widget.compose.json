@@ -3,15 +3,24 @@
     "en": "Presence overview",
     "fr": "Vue présence"
   },
-  "height": 160,
+  "height": 200,
   "settings": [
+    {
+      "id": "show_transition",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show arrival / departure",
+        "fr": "Afficher Arrivée / Départ"
+      }
+    },
     {
       "id": "show_sources",
       "type": "checkbox",
       "value": true,
       "title": {
-        "en": "Show source summary",
-        "fr": "Afficher le résumé des sources"
+        "en": "Show sources",
+        "fr": "Afficher les sources"
       }
     }
   ],

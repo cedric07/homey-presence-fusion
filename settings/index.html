@@ -1351,6 +1351,18 @@
             </p>
           </div>
         </div>
+        <p class="pf-section-label" data-i18n="settings.help_writers_title">Other presence writers</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-peach"><svg class="pf-icon">
+                <use href="#i-bolt" />
+              </svg></span>
+            <p class="pf-note" data-i18n="settings.help_writers">
+              Don’t use Flows (or other apps) that set the same user’s presence. Fusion should be the only writer for
+              managed people — otherwise they overwrite each other.
+            </p>
+          </div>
+        </div>
         <p class="pf-section-label" data-i18n="settings.help_how_title">How it works</p>
         <div class="pf-group pf-card-pad">
           <div class="pf-help-row">
@@ -1473,6 +1485,10 @@
               <input class="homey-form-input" id="delay-away" type="number" min="60" max="3600" step="1" />
               <p class="pf-field-error" id="err-delay-away"></p>
             </div>
+            <p class="pf-note" style="margin-top:4px" data-i18n="settings.delay_hint">
+              These delays add on top of any debounce already set on Smart Presence, Beacon, etc. If a source already
+              waits before going away, keep Fusion’s away delay low.
+            </p>
             <div class="pf-actions">
               <button type="button" id="btn-save-rules" class="homey-button-primary-full"
                 data-i18n="settings.save_rules">Save rules</button>
@@ -2097,8 +2113,8 @@
         if (!user || !user.enabled) return;
         fusionMode.value = user.fusionMode || 'or';
         quorumN.value = user.quorumN || 2;
-        delayHome.value = user.delayHomeSec != null ? user.delayHomeSec : 15;
-        delayAway.value = user.delayAwaySec != null ? user.delayAwaySec : 600;
+        delayHome.value = user.delayHomeSec != null ? user.delayHomeSec : 5;
+        delayAway.value = user.delayAwaySec != null ? user.delayAwaySec : 60;
         quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
         clearRulesErrors();
       }

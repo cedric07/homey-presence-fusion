@@ -61,12 +61,15 @@
     "quorum_n": "Quorum N",
     "delay_home": "Confirmer présent (secondes)",
     "delay_away": "Confirmer absent (secondes)",
+    "delay_hint": "Ces délais s’ajoutent à ceux déjà configurés sur Smart Presence, Beacon, etc. Si une source attend déjà avant de passer absent, gardez le délai Fusion bas.",
     "save_rules": "Enregistrer les règles",
     "v2_title": "Prévu en V2",
     "v2_forced": "Présence forcée (outrepasser les sources).",
     "v2_sleep": "Gestion du sommeil natif.",
     "help_geo_title": "Présence par localisation",
     "help_geo": "Désactivez la présence par localisation Homey pour chaque utilisateur géré. Sinon Homey et Présence Fusion s’écrasent.",
+    "help_writers_title": "Autres writers de présence",
+    "help_writers": "N’utilisez pas de Flows (ni d’autres apps) qui modifient la présence de la même personne. Fusion doit être le seul writer — sinon ils s’écrasent.",
     "help_how_title": "Fonctionnement",
     "help_how_1": "Activez une personne",
     "help_how_2": "Liez des appareils (téléphone, Nut, Beacon…)",
@@ -117,6 +120,10 @@
     "home": "Présent",
     "away": "Absent",
     "since": "Depuis",
-    "confirming": "Confirmation…"
+    "arrival": "Arrivée",
+    "departure": "Départ",
+    "at": "à",
+    "source_home": "Détecté",
+    "source_away": "Non détecté"
   }
 }

@@ -139,6 +139,8 @@ module.exports = class PresenceFusionApp extends Homey.App {
     } else {
       await this.engine.rebindUser(userId);
     }
+    // Refresh widget list (enable/disable changes who appears)
+    this.emitPresenceUpdate(userId);
     return user;
   }
 
@@ -265,9 +267,40 @@ module.exports = class PresenceFusionApp extends Homey.App {
     return { ok: true, link, bootstrap: await this.getSettingsBootstrap() };
   }
 
-  getWidgetStatus() {
+  async getWidgetStatus() {
+    let homeyUsers = {};
+    try {
+      homeyUsers = await this._api.users.getUsers() || {};
+    } catch (err) {
+      this.error('getUsers for widget avatars failed', err);
+    }
+
+    const enabled = this.engine.getAllStatusSnapshots().filter((p) => p.enabled);
+
+    // Align transition timestamps with native presence (source of truth)
+    for (const p of enabled) {
+      const homeyUser = homeyUsers[p.userId];
+      if (homeyUser && typeof homeyUser.present === 'boolean') {
+        await this.engine.syncFromNativePresent(p.userId, homeyUser.present);
+      }
+    }
+
+    const persons = this.engine.getAllStatusSnapshots()
+      .filter((p) => p.enabled)
+      .map((p) => {
+        const homeyUser = homeyUsers[p.userId] || null;
+        const nativePresent = homeyUser && typeof homeyUser.present === 'boolean'
+          ? Boolean(homeyUser.present)
+          : null;
+        return {
+          ...p,
+          home: nativePresent !== null ? nativePresent : p.home,
+          avatar: this._resolveUserAvatar(homeyUser),
+        };
+      });
+
     return {
-      persons: this.engine.getAllStatusSnapshots().filter((p) => p.enabled),
+      persons,
       updatedAt: Date.now(),
     };
   }
