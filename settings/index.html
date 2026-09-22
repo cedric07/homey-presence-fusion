@@ -1457,6 +1457,11 @@
       margin-top: 6px;
     }
 
+    .pf-help-row > div {
+      flex: 1;
+      min-width: 0;
+    }
+
     .pf-brand-bar {
       display: none !important;
     }
@@ -1546,7 +1551,7 @@
     <header class="homey-header" id="main-header">
       <h1 class="homey-title" data-i18n="settings.title">Presence Fusion</h1>
       <p class="homey-subtitle" data-i18n="settings.subtitle">
-        Drive Homey’s native presence from several devices — simply. A Homey API key (Presence) is required once.
+        Drive Homey’s native presence from several devices — simply.
       </p>
     </header>
     <div class="pf-brand-bar" aria-hidden="true"></div>
@@ -1579,7 +1584,7 @@
             </svg>
           </span>
           <p class="pf-callout-text" data-i18n="settings.people_hint">
-            Enable Fusion, then open a person to link sources and set rules. Native Homey presence is what Flows use.
+            Enable Fusion, then open a person to link sources and set rules.
           </p>
         </aside>
         <div id="people-list" class="pf-group"></div>
@@ -1619,62 +1624,69 @@
       </section>
 
       <section id="panel-help" class="pf-panel pf-hidden">
-        <p class="pf-section-label" data-i18n="settings.help_api_title">Homey API key</p>
+        <aside class="pf-callout" role="note">
+          <span class="pf-callout-icon" aria-hidden="true">
+            <svg class="pf-icon">
+              <use href="#i-info" />
+            </svg>
+          </span>
+          <p class="pf-callout-text" data-i18n="settings.help_intro">
+            Skip a custom Flow to manage multi-device presence: Fusion combines your sources and writes Homey’s native presence. Then use all built-in Flow cards (someone is home, left…).
+          </p>
+        </aside>
+
+        <p class="pf-section-label" data-i18n="settings.help_how_title">Getting started</p>
         <div class="pf-group pf-card-pad">
           <div class="pf-help-row">
-            <span class="pf-well is-peach"><svg class="pf-icon">
-                <use href="#i-bolt" />
+            <span class="pf-well is-mint" aria-hidden="true"><svg class="pf-icon">
+                <use href="#i-check" />
               </svg></span>
             <div>
-              <p class="pf-note" data-i18n="settings.help_api">
-                Homey apps can read presence but cannot write it without an elevated API key. Create a key in the Homey
-                Web App (Settings → API Keys), check Presence (homey.presence), then paste it in the API tab. One key covers all people.
-              </p>
-              <ol class="pf-help-list" style="margin-top:10px">
-                <li data-i18n="settings.help_api_1">Open my.homey.app → Settings → API Keys</li>
-                <li data-i18n="settings.help_api_2">New key → check Presence (homey.presence)</li>
-                <li data-i18n="settings.help_api_3">Paste the key in the API tab and Save</li>
+              <ol class="pf-help-list">
+                <li data-i18n="settings.help_how_0">Save an API key (API tab)</li>
+                <li data-i18n="settings.help_how_1">Enable a person</li>
+                <li data-i18n="settings.help_how_2">Link devices (phone, Nut, Beacon…)</li>
+                <li data-i18n="settings.help_how_3">Set fusion mode and confirm delays</li>
+                <li data-i18n="settings.help_how_4">Optional: add the widget for quick force Home / Away</li>
               </ol>
             </div>
           </div>
         </div>
-        <p class="pf-section-label" data-i18n="settings.help_geo_title">Location presence</p>
+
+        <p class="pf-section-label" data-i18n="settings.help_api_title">Homey API key</p>
         <div class="pf-group pf-card-pad">
           <div class="pf-help-row">
-            <span class="pf-well is-peach"><svg class="pf-icon">
+            <span class="pf-well is-peach" aria-hidden="true"><svg class="pf-icon">
+                <use href="#i-bolt" />
+              </svg></span>
+            <div>
+              <p class="pf-note" data-i18n="settings.help_api">
+                Without a key, Fusion can read sources but cannot write Homey presence. One key covers everyone.
+              </p>
+              <ol class="pf-help-list" style="margin-top:10px">
+                <li data-i18n="settings.help_api_1">Open my.homey.app → Settings → API Keys</li>
+                <li data-i18n="settings.help_api_2">New key → check Presence (homey.presence)</li>
+                <li data-i18n="settings.help_api_3">Paste it in the API tab and Save</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <p class="pf-section-label" data-i18n="settings.help_conflicts_title">Avoid conflicts</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-peach" aria-hidden="true"><svg class="pf-icon">
                 <use href="#i-pin" />
               </svg></span>
-            <p class="pf-note" data-i18n="settings.help_geo">
-              Turn OFF Homey location-based presence for every managed user. Otherwise Homey and Presence Fusion
-              overwrite each other.
-            </p>
-          </div>
-        </div>
-        <p class="pf-section-label" data-i18n="settings.help_writers_title">Other presence writers</p>
-        <div class="pf-group pf-card-pad">
-          <div class="pf-help-row">
-            <span class="pf-well is-peach"><svg class="pf-icon">
-                <use href="#i-bolt" />
-              </svg></span>
-            <p class="pf-note" data-i18n="settings.help_writers">
-              Don’t use Flows (or other apps) that set the same user’s presence. Fusion should be the only writer for
-              managed people — otherwise they overwrite each other.
-            </p>
-          </div>
-        </div>
-        <p class="pf-section-label" data-i18n="settings.help_how_title">How it works</p>
-        <div class="pf-group pf-card-pad">
-          <div class="pf-help-row">
-            <span class="pf-well is-mint"><svg class="pf-icon">
-                <use href="#i-bolt" />
-              </svg></span>
-            <ol class="pf-help-list">
-              <li data-i18n="settings.help_how_0">Save a Homey API key with Presence</li>
-              <li data-i18n="settings.help_how_1">Enable a person</li>
-              <li data-i18n="settings.help_how_2">Link devices (phone, Nut, Beacon…)</li>
-              <li data-i18n="settings.help_how_3">Homey native presence updates automatically</li>
-              <li data-i18n="settings.help_how_4">Use Homey’s built-in Flow cards</li>
-            </ol>
+            <div>
+              <p class="pf-note" data-i18n="settings.help_conflicts">
+                For each managed person, Fusion must be the only writer of presence.
+              </p>
+              <ul class="pf-help-list" style="margin-top:10px;list-style:disc">
+                <li data-i18n="settings.help_conflicts_geo">Turn off Homey location-based presence</li>
+                <li data-i18n="settings.help_conflicts_flows">Don’t use Flows or other apps that set the same person’s presence</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -1757,10 +1769,11 @@
             <div class="homey-form-group">
               <label class="homey-form-label" for="fusion-mode" data-i18n="settings.fusion_mode">Mode</label>
               <select class="homey-form-select" id="fusion-mode">
-                <option value="or" data-i18n="settings.mode_or">OR — any source home ⇒ present</option>
-                <option value="and" data-i18n="settings.mode_and">AND — all sources home ⇒ present</option>
-                <option value="quorum" data-i18n="settings.mode_quorum">Quorum — at least N sources</option>
+                <option value="or" data-i18n="settings.mode_or">OR</option>
+                <option value="and" data-i18n="settings.mode_and">AND</option>
+                <option value="quorum" data-i18n="settings.mode_quorum">Quorum</option>
               </select>
+              <p class="pf-field-hint" id="fusion-mode-hint"></p>
             </div>
             <div class="homey-form-group" id="quorum-wrap">
               <label class="homey-form-label" for="quorum-n" data-i18n="settings.quorum_n">Quorum N</label>
@@ -1831,6 +1844,7 @@
       var candidatesFrame = document.getElementById('candidates-frame');
       var linkBtn = document.getElementById('btn-link');
       var fusionMode = document.getElementById('fusion-mode');
+      var fusionModeHint = document.getElementById('fusion-mode-hint');
       var quorumN = document.getElementById('quorum-n');
       var quorumWrap = document.getElementById('quorum-wrap');
       var delayHome = document.getElementById('delay-home');
@@ -2477,6 +2491,19 @@
           });
       }
 
+      function updateModeHint() {
+        var mode = fusionMode.value || 'or';
+        var key = 'settings.mode_hint_' + mode;
+        var fallbacks = {
+          or: 'Any single source present is enough to be present.',
+          and: 'All sources must be present to count as present.',
+          quorum: 'Present once at least N sources are present.'
+        };
+        if (fusionModeHint) {
+          fusionModeHint.textContent = t(key, fallbacks[mode] || fallbacks.or);
+        }
+      }
+
       function renderRules() {
         var user = userById(selectedUserId);
         if (!user || !user.enabled) return;
@@ -2485,6 +2512,7 @@
         delayHome.value = user.delayHomeSec != null ? user.delayHomeSec : 5;
         delayAway.value = user.delayAwaySec != null ? user.delayAwaySec : 60;
         quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
+        updateModeHint();
         clearRulesErrors();
       }
 
@@ -2859,6 +2887,7 @@
       });
       fusionMode.addEventListener('change', function () {
         quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
+        updateModeHint();
         clearRulesErrors();
       });
       [quorumN, delayHome, delayAway].forEach(function (el) {
