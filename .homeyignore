@@ -1,6 +1,7 @@
 # Keep Homey deploy package lean
 docs/
 .cursor/
+README.md
 .eslintrc.json
 .gitignore
 .git/

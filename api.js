@@ -38,4 +38,10 @@ module.exports = {
   async updateLinkedSource({ homey, body }) {
     return homey.app.updateLinkedSource(body || {});
   },
+
+  async saveOwnerApiKey({ homey, body }) {
+    return {
+      bootstrap: await homey.app.saveOwnerApiKey(body && body.token),
+    };
+  },
 };

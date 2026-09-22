@@ -19,6 +19,13 @@
       --pf-green: #34c759;
       --pf-orange: #ff9500;
       --pf-red: #ff3b30;
+      /* Homey semantic colors (Style Library) with local fallbacks */
+      --pf-color-success: var(--homey-color-success, var(--homey-color-green, var(--pf-green)));
+      --pf-color-warning: var(--homey-color-warning, var(--homey-color-orange, var(--pf-orange)));
+      --pf-color-danger: var(--homey-color-danger, var(--homey-color-red, var(--pf-red)));
+      --pf-text-success: var(--homey-text-color-success, var(--pf-color-success));
+      --pf-text-warning: var(--homey-text-color-warning, var(--pf-color-warning));
+      --pf-text-danger: var(--homey-text-color-danger, var(--pf-color-danger));
       --pf-canvas: #ffffff;
       --pf-card: #ffffff;
       --pf-ink: #000000;
@@ -29,7 +36,7 @@
       --pf-fill: #f2f2f7;
       --pf-radius: 12px;
       --pf-radius-lg: 14px;
-      --pf-form-pad: 14px;
+      --pf-form-pad: 16px;
       --pf-form-gap: 12px;
       --pf-select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%238e8e93' d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E");
     }
@@ -71,9 +78,9 @@
       margin: 0 !important;
       padding: 0 !important;
       border: 0 !important;
-      display: flex;
-      flex-direction: column;
-      gap: var(--pf-form-gap);
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
     }
 
     .homey-form-group {
@@ -101,7 +108,7 @@
       height: auto !important;
       min-height: 0 !important;
       margin: 0 !important;
-      padding: 10px 12px !important;
+      padding: 11px 12px !important;
       color: var(--pf-ink) !important;
       background-color: var(--pf-fill) !important;
       background-image: none !important;
@@ -111,6 +118,13 @@
       font-size: 0.95em !important;
       line-height: 1.35 !important;
       box-shadow: none !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      text-indent: 0 !important;
+    }
+
+    #fusion-mode {
+      padding-right: 36px !important;
     }
 
     .homey-form-select {
@@ -125,15 +139,16 @@
     }
 
     .pf-field-hint {
-      margin: 8px 0 0 !important;
-      font-size: 0.78em !important;
-      line-height: 1.4 !important;
+      margin: 10px 0 0 !important;
+      font-size: 0.82em !important;
+      line-height: 1.45 !important;
       color: var(--pf-muted) !important;
     }
 
     .pf-field-error {
       margin: 4px 0 0 !important;
       font-size: 0.75em !important;
+      color: var(--pf-text-danger) !important;
     }
 
     /* Segmented control — iOS style */
@@ -179,14 +194,14 @@
 
     .pf-nav-btn.is-active,
     .pf-seg-btn.is-active {
-      background: var(--pf-card) !important;
-      color: var(--pf-ink) !important;
+      background: var(--pf-blue) !important;
+      color: #fff !important;
       font-weight: 700 !important;
       border-radius: 100px !important;
     }
 
     .pf-seg-btn.is-active .pf-icon {
-      color: var(--pf-blue) !important;
+      color: #fff !important;
     }
 
     /* iOS section headers */
@@ -270,6 +285,19 @@
 
     .pf-card-pad {
       padding: var(--pf-form-pad) !important;
+    }
+
+    .pf-row.is-locked {
+      opacity: 0.48;
+      pointer-events: none;
+    }
+
+    .pf-row.is-locked .pf-switch {
+      pointer-events: none;
+    }
+
+    .pf-locked-note {
+      margin: 0 0 12px;
     }
 
     .pf-row {
@@ -700,6 +728,37 @@
       transform: rotate(90deg);
     }
 
+    .pf-source-remove {
+      all: unset;
+      box-sizing: border-box !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 0 11px !important;
+      border-radius: 8px !important;
+      background: color-mix(in srgb, var(--pf-color-danger) 8%, var(--pf-fill)) !important;
+      color: var(--pf-text-danger) !important;
+      font: inherit !important;
+      font-size: 0.78em !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      border: 0 !important;
+      box-shadow: none !important;
+      line-height: 1 !important;
+    }
+
+    .pf-source-remove:active {
+      background: color-mix(in srgb, var(--pf-color-danger) 14%, var(--pf-fill)) !important;
+    }
+
+    .pf-source-remove .pf-icon {
+      width: 13px !important;
+      height: 13px !important;
+      color: currentColor !important;
+    }
+
     .pf-source-adv {
       margin-top: 10px;
       padding: 0;
@@ -786,7 +845,7 @@
     .pf-source-adv .pf-field-hint {
       margin: 0 !important;
       padding: var(--pf-form-pad);
-      font-size: 0.75em;
+      font-size: 0.82em !important;
       color: var(--pf-muted) !important;
     }
 
@@ -794,8 +853,55 @@
       padding: var(--pf-form-pad) !important;
     }
 
+    .pf-add-search .homey-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
     .pf-add-search .pf-field-hint {
-      margin: 6px 0 0 !important;
+      margin: 10px 0 0 !important;
+    }
+
+    .pf-search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-sizing: border-box;
+      min-height: 44px;
+      padding: 0 12px;
+      background: var(--pf-fill);
+      border: 1px solid var(--pf-sep);
+      border-radius: 10px;
+    }
+
+    .pf-search-wrap:focus-within {
+      border-color: color-mix(in srgb, var(--pf-blue) 45%, var(--pf-sep));
+    }
+
+    .pf-search-wrap .pf-search-icon {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      color: var(--pf-muted);
+      pointer-events: none;
+    }
+
+    .pf-search-wrap #search,
+    .pf-search-wrap .homey-form-input {
+      flex: 1 1 auto;
+      width: auto !important;
+      min-width: 0 !important;
+      margin: 0 !important;
+      padding: 11px 0 !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      text-indent: 0 !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
     }
 
     .pf-candidates {
@@ -965,13 +1071,17 @@
     .pf-hint,
     .pf-note {
       margin: 0;
-      line-height: 1.4;
+      line-height: 1.45;
       color: var(--pf-muted) !important;
-      font-size: 0.9em;
+      font-size: 0.82em !important;
+    }
+
+    .homey-form-fieldset > .pf-note {
+      margin-top: 2px !important;
     }
 
     .pf-actions {
-      margin-top: 4px;
+      margin-top: 6px;
       padding-top: 4px;
     }
 
@@ -996,14 +1106,41 @@
       text-align: center;
     }
 
+    .pf-btn-secondary {
+      all: unset;
+      box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 100% !important;
+      background: var(--pf-fill) !important;
+      color: var(--pf-ink) !important;
+      border: 1px solid var(--pf-sep) !important;
+      border-radius: 10px !important;
+      font: inherit !important;
+      font-weight: 600 !important;
+      font-size: 0.95em !important;
+      padding: 12px 14px !important;
+      box-shadow: none !important;
+      cursor: pointer;
+      text-align: center;
+    }
+
     .homey-button-primary-full:active {
       opacity: 0.9;
     }
 
+    .pf-btn-secondary:active {
+      opacity: 0.88;
+    }
+
     .homey-button-primary-full.is-disabled,
-    .homey-button-primary-full:disabled {
+    .homey-button-primary-full:disabled,
+    .pf-btn-secondary.is-disabled,
+    .pf-btn-secondary:disabled {
       background: var(--pf-track) !important;
       color: var(--pf-muted) !important;
+      border-color: transparent !important;
       opacity: 1 !important;
       pointer-events: none;
     }
@@ -1040,8 +1177,9 @@
       color: var(--pf-muted) !important;
     }
 
+    /* In-page alert (load error only) */
     .pf-banner {
-      display: none;
+      display: flex;
       align-items: flex-start;
       gap: 10px;
       margin: 0 0 14px;
@@ -1052,10 +1190,6 @@
       background: var(--pf-card) !important;
       border: 0;
       color: var(--pf-ink) !important;
-    }
-
-    .pf-banner.is-visible {
-      display: flex;
     }
 
     .pf-banner-icon {
@@ -1081,35 +1215,156 @@
       color: var(--pf-muted) !important;
     }
 
-    .pf-banner-close {
+    .pf-banner.is-error {
+      background: color-mix(in srgb, var(--pf-color-danger) 14%, #fff) !important;
+    }
+
+    .pf-load-error .pf-banner-icon {
+      color: var(--pf-text-danger);
+    }
+
+    .pf-load-error .pf-banner-title {
+      color: var(--pf-text-danger) !important;
+    }
+
+    /* Overlay toast — nearly full-width, light inset from modal edges */
+    .pf-toast-host {
+      position: fixed;
+      inset-inline: 0;
+      bottom: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding-inline: 12px;
+      padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+
+    .pf-toast {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 8px 12px;
+      border-radius: 10px;
+      line-height: 1.3;
+      font-size: 0.8em;
+      color: var(--pf-ink) !important;
+      background: var(--pf-card) !important;
+      border: 1px solid var(--pf-sep);
+      box-shadow: 0 4px 14px rgba(9, 34, 95, 0.1);
+      transform: translateY(8px);
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease,
+        visibility 0.2s ease;
+      box-sizing: border-box;
+    }
+
+    .pf-toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .pf-toast-icon {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      color: var(--pf-blue);
+    }
+
+    .pf-toast-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pf-toast-title {
+      margin: 0;
+      font-weight: 600;
+      font-size: 0.95em;
+      color: var(--pf-ink) !important;
+    }
+
+    .pf-toast-text {
+      margin: 1px 0 0;
+      font-size: 0.9em;
+      color: var(--pf-muted) !important;
+    }
+
+    .pf-toast-close {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      margin: 0;
+      margin-inline-start: 2px;
+      padding: 0;
       border: 0;
+      border-radius: 6px;
       background: transparent;
       color: var(--pf-muted);
+      opacity: 0.55;
       cursor: pointer;
-      padding: 2px;
-      border-radius: 6px;
     }
 
-    .pf-banner.is-success {
-      background: #e4f8ea !important;
+    .pf-toast-close:hover,
+    .pf-toast-close:focus-visible {
+      opacity: 0.9;
+      background: color-mix(in srgb, var(--pf-ink) 6%, transparent);
     }
 
-    .pf-banner.is-error {
-      background: #ffe5e5 !important;
+    .pf-toast-close .pf-icon {
+      width: 14px;
+      height: 14px;
     }
 
-    .pf-banner.is-info {
-      background: var(--pf-blue-well) !important;
+    .pf-toast.is-success {
+      background: color-mix(in srgb, var(--pf-color-success) 10%, #fff) !important;
+      border-color: color-mix(in srgb, var(--pf-color-success) 28%, var(--pf-sep));
     }
 
-    .pf-banner.is-warning {
-      background: #fff1e0 !important;
+    .pf-toast.is-success .pf-toast-icon {
+      color: var(--pf-text-success) !important;
+    }
+
+    .pf-toast.is-error {
+      background: color-mix(in srgb, var(--pf-color-danger) 10%, #fff) !important;
+      border-color: color-mix(in srgb, var(--pf-color-danger) 28%, var(--pf-sep));
+    }
+
+    .pf-toast.is-error .pf-toast-icon {
+      color: var(--pf-text-danger) !important;
+    }
+
+    .pf-toast.is-warning {
+      background: color-mix(in srgb, var(--pf-color-warning) 12%, #fff) !important;
+      border-color: color-mix(in srgb, var(--pf-color-warning) 32%, var(--pf-sep));
+    }
+
+    .pf-toast.is-warning .pf-toast-icon {
+      color: var(--pf-text-warning) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pf-toast {
+        transition: none;
+      }
     }
 
     .pf-field-error {
       display: none;
       margin: 6px 0 0;
-      color: var(--pf-red) !important;
+      color: var(--pf-text-danger) !important;
       font-size: 0.8em;
     }
 
@@ -1119,7 +1374,8 @@
 
     .homey-form-group.has-error .homey-form-input,
     .homey-form-group.has-error .homey-form-select {
-      outline: 2px solid #ffaba6;
+      outline: 2px solid color-mix(in srgb, var(--pf-color-danger) 55%, #fff);
+      border-color: color-mix(in srgb, var(--pf-color-danger) 45%, var(--pf-sep)) !important;
     }
 
     .pf-load-error {
@@ -1251,6 +1507,10 @@
       <path fill="currentColor"
         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
     </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <path fill="currentColor"
+        d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+    </symbol>
     <symbol id="i-close" viewBox="0 0 24 24">
       <path fill="currentColor"
         d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -1301,37 +1561,33 @@
     <header class="homey-header" id="main-header">
       <h1 class="homey-title" data-i18n="settings.title">Presence Fusion</h1>
       <p class="homey-subtitle" data-i18n="settings.subtitle">
-        Drive Homey’s native presence from several devices — simply.
+        Drive Homey’s native presence from several devices — simply. A Homey API key (Presence) is required once.
       </p>
     </header>
     <div class="pf-brand-bar" aria-hidden="true"></div>
 
-    <div id="banner" class="pf-banner" role="status" aria-live="polite">
-      <svg class="pf-banner-icon" id="banner-icon" aria-hidden="true">
-        <use href="#i-info" />
-      </svg>
-      <div class="pf-banner-body">
-        <p class="pf-banner-title" id="banner-title"></p>
-        <p class="pf-banner-text" id="banner-text"></p>
-      </div>
-      <button type="button" class="pf-banner-close" id="banner-close" aria-label="Close">
-        <svg class="pf-icon" width="18" height="18">
-          <use href="#i-close" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Hub: People | Help -->
+    <!-- Hub: People | API | Help -->
     <div id="view-hub">
       <nav class="pf-nav" role="tablist">
         <button type="button" class="pf-nav-btn is-active" data-hub="people"
           data-i18n="settings.tab_people">People</button>
+        <button type="button" class="pf-nav-btn" data-hub="api" data-i18n="settings.tab_api">API key</button>
         <button type="button" class="pf-nav-btn" data-hub="help" data-i18n="settings.tab_help">Help</button>
       </nav>
 
       <section id="panel-people" class="pf-panel">
         <p class="pf-section-label" data-i18n="settings.people_legend">Homey users</p>
-        <aside class="pf-callout" role="note">
+        <aside class="pf-callout pf-locked-note pf-hidden" id="people-locked-callout" role="note">
+          <span class="pf-callout-icon" aria-hidden="true">
+            <svg class="pf-icon">
+              <use href="#i-info" />
+            </svg>
+          </span>
+          <p class="pf-callout-text" data-i18n="settings.people_locked">
+            Save a Homey API key in the API tab first. People settings stay locked until then.
+          </p>
+        </aside>
+        <aside class="pf-callout" id="people-hint-callout" role="note">
           <span class="pf-callout-icon" aria-hidden="true">
             <svg class="pf-icon">
               <use href="#i-info" />
@@ -1344,7 +1600,59 @@
         <div id="people-list" class="pf-group"></div>
       </section>
 
+      <section id="panel-api" class="pf-panel pf-hidden">
+        <p class="pf-section-label" data-i18n="settings.api_key_legend">Homey API key</p>
+        <aside class="pf-callout" id="api-key-callout" role="note">
+          <span class="pf-callout-icon" aria-hidden="true">
+            <svg class="pf-icon">
+              <use href="#i-info" />
+            </svg>
+          </span>
+          <p class="pf-callout-text" id="api-key-status-text" data-i18n="settings.api_key_missing">
+            Required to write Homey native presence. Apps cannot do this without an API key (Athom limitation).
+          </p>
+        </aside>
+        <div class="pf-group pf-card-pad">
+          <fieldset class="homey-form-fieldset">
+            <div class="homey-form-group">
+              <label class="homey-form-label" for="owner-api-key" data-i18n="settings.api_key_label">API key</label>
+              <input class="homey-form-input" id="owner-api-key" type="password" autocomplete="off"
+                spellcheck="false" data-i18n-placeholder="settings.api_key_placeholder"
+                placeholder="Paste Homey API key…" />
+              <p class="pf-field-hint" data-i18n="settings.api_key_hint">
+                Homey Web App → Settings → API Keys → New. Check Presence (homey.presence). One key for the whole Homey (all people). Keep it private.
+              </p>
+            </div>
+            <div class="pf-actions" style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+              <button type="button" id="btn-save-api-key" class="homey-button-primary-full"
+                data-i18n="settings.api_key_save">Save API key</button>
+              <button type="button" id="btn-clear-api-key" class="pf-btn-secondary"
+                data-i18n="settings.api_key_clear">Remove key</button>
+            </div>
+          </fieldset>
+        </div>
+      </section>
+
       <section id="panel-help" class="pf-panel pf-hidden">
+        <p class="pf-section-label" data-i18n="settings.help_api_title">Homey API key</p>
+        <div class="pf-group pf-card-pad">
+          <div class="pf-help-row">
+            <span class="pf-well is-peach"><svg class="pf-icon">
+                <use href="#i-bolt" />
+              </svg></span>
+            <div>
+              <p class="pf-note" data-i18n="settings.help_api">
+                Homey apps can read presence but cannot write it without an elevated API key. Create a key in the Homey
+                Web App (Settings → API Keys), check Presence (homey.presence), then paste it in the API tab. One key covers all people.
+              </p>
+              <ol class="pf-help-list" style="margin-top:10px">
+                <li data-i18n="settings.help_api_1">Open my.homey.app → Settings → API Keys</li>
+                <li data-i18n="settings.help_api_2">New key → check Presence (homey.presence)</li>
+                <li data-i18n="settings.help_api_3">Paste the key in the API tab and Save</li>
+              </ol>
+            </div>
+          </div>
+        </div>
         <p class="pf-section-label" data-i18n="settings.help_geo_title">Location presence</p>
         <div class="pf-group pf-card-pad">
           <div class="pf-help-row">
@@ -1376,6 +1684,7 @@
                 <use href="#i-bolt" />
               </svg></span>
             <ol class="pf-help-list">
+              <li data-i18n="settings.help_how_0">Save a Homey API key with Presence</li>
               <li data-i18n="settings.help_how_1">Enable a person</li>
               <li data-i18n="settings.help_how_2">Link devices (phone, Nut, Beacon…)</li>
               <li data-i18n="settings.help_how_3">Homey native presence updates automatically</li>
@@ -1442,8 +1751,14 @@
         <div class="pf-group pf-add-search">
           <div class="homey-form-group" style="margin:0">
             <label class="homey-form-label" for="search" data-i18n="settings.search">Search</label>
-            <input class="homey-form-input" id="search" type="search" autocomplete="off"
-              data-i18n-placeholder="settings.search_placeholder" placeholder="Type at least 2 letters…" />
+            <div class="pf-search-wrap">
+              <svg class="pf-search-icon" aria-hidden="true">
+                <use href="#i-search" />
+              </svg>
+              <input class="homey-form-input" id="search" type="text" inputmode="search" enterkeyhint="search"
+                autocomplete="off" data-i18n-placeholder="settings.search_placeholder"
+                placeholder="Type at least 2 letters…" />
+            </div>
             <p class="pf-field-hint" id="candidates-hint" data-i18n="settings.type_to_search">Type at least 2 letters to
               search.</p>
           </div>
@@ -1476,19 +1791,19 @@
             </div>
             <div class="homey-form-group" id="quorum-wrap">
               <label class="homey-form-label" for="quorum-n" data-i18n="settings.quorum_n">Quorum N</label>
-              <input class="homey-form-input" id="quorum-n" type="number" min="1" max="10" step="1" />
+              <input class="homey-form-input" id="quorum-n" type="number" inputmode="numeric" min="1" max="10" step="1" />
               <p class="pf-field-error" id="err-quorum"></p>
             </div>
             <div class="homey-form-group" id="delay-home-wrap">
               <label class="homey-form-label" for="delay-home" data-i18n="settings.delay_home">Confirm home
                 (seconds)</label>
-              <input class="homey-form-input" id="delay-home" type="number" min="0" max="120" step="1" />
+              <input class="homey-form-input" id="delay-home" type="number" inputmode="numeric" min="0" max="120" step="1" />
               <p class="pf-field-error" id="err-delay-home"></p>
             </div>
             <div class="homey-form-group" id="delay-away-wrap">
               <label class="homey-form-label" for="delay-away" data-i18n="settings.delay_away">Confirm away
                 (seconds)</label>
-              <input class="homey-form-input" id="delay-away" type="number" min="60" max="3600" step="1" />
+              <input class="homey-form-input" id="delay-away" type="number" inputmode="numeric" min="60" max="3600" step="1" />
               <p class="pf-field-error" id="err-delay-away"></p>
             </div>
             <p class="pf-note" style="margin-top:4px" data-i18n="settings.delay_hint">
@@ -1508,6 +1823,23 @@
           <p class="pf-note" style="margin-top:4px" data-i18n="settings.v2_sleep">Native asleep management.</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div id="toast-host" class="pf-toast-host" aria-live="polite" aria-relevant="additions text">
+    <div id="toast" class="pf-toast" role="status">
+      <svg class="pf-toast-icon" id="toast-icon" aria-hidden="true">
+        <use href="#i-info" />
+      </svg>
+      <div class="pf-toast-body">
+        <p class="pf-toast-title" id="toast-title"></p>
+        <p class="pf-toast-text" id="toast-text"></p>
+      </div>
+      <button type="button" class="pf-toast-close" id="toast-close" aria-label="Close">
+        <svg class="pf-icon" aria-hidden="true">
+          <use href="#i-close" />
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -1542,11 +1874,11 @@
       var errDelayHome = document.getElementById('err-delay-home');
       var errDelayAway = document.getElementById('err-delay-away');
       var saveRulesBtn = document.getElementById('btn-save-rules');
-      var bannerEl = document.getElementById('banner');
-      var bannerIcon = document.getElementById('banner-icon');
-      var bannerTitle = document.getElementById('banner-title');
-      var bannerText = document.getElementById('banner-text');
-      var bannerClose = document.getElementById('banner-close');
+      var toastEl = document.getElementById('toast');
+      var toastIcon = document.getElementById('toast-icon');
+      var toastTitle = document.getElementById('toast-title');
+      var toastText = document.getElementById('toast-text');
+      var toastClose = document.getElementById('toast-close');
       var btnBack = document.getElementById('btn-back');
       var personAvatar = document.getElementById('person-avatar');
       var personName = document.getElementById('person-name');
@@ -1555,6 +1887,13 @@
       var segRules = document.getElementById('seg-rules');
       var segPanelSources = document.getElementById('seg-panel-sources');
       var segPanelRules = document.getElementById('seg-panel-rules');
+      var ownerApiKeyInput = document.getElementById('owner-api-key');
+      var btnSaveApiKey = document.getElementById('btn-save-api-key');
+      var btnClearApiKey = document.getElementById('btn-clear-api-key');
+      var apiKeyStatusText = document.getElementById('api-key-status-text');
+      var apiKeyCallout = document.getElementById('api-key-callout');
+      var peopleLockedCallout = document.getElementById('people-locked-callout');
+      var peopleHintCallout = document.getElementById('people-hint-callout');
 
       var bootstrap = { users: [] };
       var selectedUserId = null;
@@ -1565,8 +1904,9 @@
       var selectedDeviceId = null;
       var searchTimer = null;
       var searchSeq = 0;
-      var bannerTimer = null;
+      var toastTimer = null;
       var busy = false;
+      var busyBtn = null;
 
       function t(key, fallback) {
         try {
@@ -1597,6 +1937,18 @@
         var raw = rawError(err).replace(/^Error:\s*/i, '').trim();
         var lower = raw.toLowerCase();
         if (!raw) return t('settings.err_generic', 'Something went wrong. Please try again.');
+        if (lower.indexOf('api_key_scope') !== -1 || (lower.indexOf('api key') !== -1 && lower.indexOf('scope') !== -1)) {
+          return t(
+            'settings.err_api_key_scope',
+            'This API key cannot write presence. Recreate it and check Presence (homey.presence).'
+          );
+        }
+        if (lower.indexOf('api_key_invalid') !== -1 || lower.indexOf('api key invalid') !== -1) {
+          return t('settings.err_api_key_invalid', 'Invalid API key. Check that you copied it fully.');
+        }
+        if (lower.indexOf('api key') !== -1 || lower.indexOf('missing homey api') !== -1) {
+          return t('settings.err_api_key', 'Add a Homey API key with Presence in the API tab.');
+        }
         if (lower.indexOf('source not found') !== -1) return t('settings.err_source_not_found', 'This linked source was not found.');
         if (lower.indexOf('device not found') !== -1) return t('settings.err_device_not_found', 'This device is no longer available on Homey.');
         if (lower.indexOf('user not found') !== -1 || lower.indexOf('person not found') !== -1) {
@@ -1610,46 +1962,69 @@
         if (lower.indexOf('network') !== -1 || lower.indexOf('timeout') !== -1 || lower.indexOf('econn') !== -1) {
           return t('settings.err_network', 'Connection issue. Check Homey and try again.');
         }
-        if (lower.indexOf('permission') !== -1 || lower.indexOf('denied') !== -1) {
+        if (lower.indexOf('permission') !== -1 || lower.indexOf('denied') !== -1 || lower.indexOf('scope') !== -1) {
           return t('settings.err_permission', 'Homey denied this action. Check the app permissions.');
         }
         if (raw.length > 160) raw = raw.slice(0, 157) + '…';
         return raw;
       }
 
-      function hideBanner() {
-        clearTimeout(bannerTimer);
-        bannerEl.classList.remove('is-visible', 'is-success', 'is-error', 'is-info', 'is-warning');
-        bannerTitle.textContent = '';
-        bannerText.textContent = '';
+      function hideToast() {
+        clearTimeout(toastTimer);
+        toastTimer = null;
+        if (toastEl) toastEl.classList.remove('is-visible');
       }
 
-      function setBannerIcon(type) {
+      function setToastIcon(type) {
         var href = '#i-info';
         if (type === 'success') href = '#i-check';
         else if (type === 'error' || type === 'warning') href = '#i-error';
-        bannerIcon.innerHTML = '<use href="' + href + '"/>';
+        if (toastIcon) toastIcon.innerHTML = '<use href="' + href + '"/>';
       }
 
       function notify(type, title, text, opts) {
         opts = opts || {};
-        clearTimeout(bannerTimer);
-        bannerEl.classList.remove('is-success', 'is-error', 'is-info', 'is-warning');
-        bannerEl.classList.add('is-' + type, 'is-visible');
-        setBannerIcon(type);
-        bannerTitle.textContent = title || '';
-        bannerText.textContent = text || '';
-        bannerText.style.display = text ? '' : 'none';
-        bannerEl.setAttribute('role', type === 'error' ? 'alert' : 'status');
-        if (opts.sticky) return;
-        var ms = opts.duration != null ? opts.duration : (type === 'error' ? 7000 : 3500);
-        bannerTimer = setTimeout(hideBanner, ms);
+        if (!toastEl) return;
+        clearTimeout(toastTimer);
+        toastEl.classList.remove('is-success', 'is-error', 'is-warning');
+        toastEl.classList.add('is-' + type);
+        setToastIcon(type);
+        toastTitle.textContent = title || '';
+        toastText.textContent = text || '';
+        toastText.style.display = text ? '' : 'none';
+        toastEl.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toastEl.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+        // Force reflow so rapid replacements still animate
+        void toastEl.offsetWidth;
+        toastEl.classList.add('is-visible');
+        var defaults = { success: 3000, warning: 5000, error: 7000 };
+        var ms = opts.duration != null ? opts.duration : (defaults[type] || 3500);
+        toastTimer = setTimeout(hideToast, ms);
       }
 
       function notifySuccess(title, text) { notify('success', title, text); }
-      function notifyError(title, text) { notify('error', title, text, { duration: 8000 }); }
-      function notifyInfo(title, text) { notify('info', title, text); }
-      function notifyWarning(title, text) { notify('warning', title, text, { duration: 6000 }); }
+      function notifyError(title, text) { notify('error', title, text); }
+      function notifyWarning(title, text) { notify('warning', title, text); }
+
+      function setBusy(btn, on) {
+        busy = !!on;
+        if (busyBtn && busyBtn !== btn) {
+          busyBtn.disabled = false;
+          busyBtn.classList.remove('is-loading');
+          busyBtn.removeAttribute('aria-busy');
+        }
+        busyBtn = on && btn ? btn : null;
+        if (btn) {
+          btn.disabled = !!on;
+          btn.classList.toggle('is-loading', !!on);
+          if (on) btn.setAttribute('aria-busy', 'true');
+          else btn.removeAttribute('aria-busy');
+        }
+        if (btnClearApiKey && btn !== btnClearApiKey) {
+          btnClearApiKey.disabled = !bootstrap.ownerApiKeyConfigured || busy;
+          btnClearApiKey.classList.toggle('is-disabled', !bootstrap.ownerApiKeyConfigured || busy);
+        }
+      }
 
       function setFieldError(wrap, errEl, message) {
         if (!wrap || !errEl) return;
@@ -1782,6 +2157,8 @@
           btn.classList.toggle('is-active', btn.getAttribute('data-hub') === hubTab);
         });
         document.getElementById('panel-people').classList.toggle('pf-hidden', hubTab !== 'people');
+        var panelApi = document.getElementById('panel-api');
+        if (panelApi) panelApi.classList.toggle('pf-hidden', hubTab !== 'api');
         document.getElementById('panel-help').classList.toggle('pf-hidden', hubTab !== 'help');
       }
 
@@ -1793,7 +2170,19 @@
         segPanelRules.classList.toggle('pf-hidden', seg !== 'rules');
       }
 
+      function hasApiKey() {
+        return !!bootstrap.ownerApiKeyConfigured;
+      }
+
       function openPerson(userId, seg) {
+        if (!hasApiKey()) {
+          showHub('api');
+          notifyWarning(
+            t('settings.api_key_needed_title', 'API key required'),
+            t('settings.api_key_needed_text', 'Open the API tab and save a Homey API key with Presence.')
+          );
+          return;
+        }
         var user = userById(userId);
         if (!user || !user.enabled) return;
         selectedUserId = userId;
@@ -1815,6 +2204,10 @@
       }
 
       function renderPeople() {
+        var locked = !hasApiKey();
+        if (peopleLockedCallout) peopleLockedCallout.classList.toggle('pf-hidden', !locked);
+        if (peopleHintCallout) peopleHintCallout.classList.toggle('pf-hidden', locked);
+
         peopleList.innerHTML = '';
         if (!bootstrap.users.length) {
           peopleList.className = '';
@@ -1828,7 +2221,7 @@
 
         bootstrap.users.forEach(function (u) {
           var row = document.createElement('div');
-          row.className = 'pf-row';
+          row.className = 'pf-row' + (locked ? ' is-locked' : '');
 
           var avatar = document.createElement('div');
           fillAvatar(avatar, u);
@@ -1849,7 +2242,7 @@
 
           var actionSlot = document.createElement('div');
           actionSlot.className = 'pf-row-action';
-          if (u.enabled) {
+          if (u.enabled && !locked) {
             var cfg = document.createElement('button');
             cfg.type = 'button';
             cfg.className = 'pf-btn-config';
@@ -1869,6 +2262,7 @@
           var input = document.createElement('input');
           input.type = 'checkbox';
           input.checked = !!u.enabled;
+          input.disabled = locked;
           input.setAttribute('role', 'switch');
           input.setAttribute('aria-label', u.name);
           input.addEventListener('change', function () {
@@ -1921,14 +2315,14 @@
 
           var btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'pf-icon-btn';
+          btn.className = 'pf-source-remove';
           btn.setAttribute('aria-label', t('settings.unlink', 'Remove'));
-          btn.innerHTML = '<svg class="pf-icon is-danger" width="20" height="20"><use href="#i-delete"/></svg>';
+          btn.innerHTML = '<svg class="pf-icon" aria-hidden="true"><use href="#i-delete"/></svg>'
+            + escapeHtml(t('settings.unlink', 'Remove'));
           btn.addEventListener('click', function () {
             unlink(link.id || link._key);
           });
           top.appendChild(main);
-          top.appendChild(btn);
 
           var capBlock = document.createElement('div');
           capBlock.className = 'pf-source-cap';
@@ -1959,6 +2353,7 @@
           editBtn.innerHTML = t('settings.capability_edit', 'Edit')
             + '<svg class="pf-icon" width="12" height="12"><use href="#i-chevron"/></svg>';
           actions.appendChild(editBtn);
+          actions.appendChild(btn);
 
           var adv = document.createElement('div');
           adv.className = 'pf-source-adv pf-hidden';
@@ -2082,12 +2477,8 @@
 
       function saveCapability(linkId, capability, invert, btn) {
         var user = userById(selectedUserId);
-        if (!user) return;
-        if (btn) {
-          btn.disabled = true;
-          btn.classList.add('is-loading');
-        }
-        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_capability', 'Updating capability…'));
+        if (!user || busy) return;
+        setBusy(btn, true);
         api('POST', '/linking/update', {
           userId: user.userId,
           linkId: linkId,
@@ -2107,10 +2498,7 @@
             notifyError(t('settings.capability_failed_title', 'Couldn’t update'), friendlyError(err));
           })
           .then(function () {
-            if (btn) {
-              btn.disabled = false;
-              btn.classList.remove('is-loading');
-            }
+            setBusy(btn, false);
           });
       }
 
@@ -2194,6 +2582,7 @@
 
       function applyBootstrap(data) {
         bootstrap = data || { users: [] };
+        renderApiKeyStatus();
         renderPeople();
 
         if (screen === 'person') {
@@ -2209,6 +2598,81 @@
         }
       }
 
+      function renderApiKeyStatus() {
+        var ok = !!bootstrap.ownerApiKeyConfigured;
+        if (apiKeyStatusText) {
+          apiKeyStatusText.textContent = ok
+            ? t('settings.api_key_ok', 'API key configured') +
+              (bootstrap.ownerApiKeyHint ? ' (' + bootstrap.ownerApiKeyHint + ')' : '')
+            : t(
+              'settings.api_key_missing',
+              'Required to write Homey native presence. Apps cannot do this without an API key (Athom limitation). One key for the whole Homey.'
+            );
+        }
+        if (apiKeyCallout) {
+          apiKeyCallout.style.background = ok
+            ? 'linear-gradient(180deg, #E8F8EE 0%, #DFF3E6 100%)'
+            : '';
+          apiKeyCallout.style.borderColor = ok ? 'rgba(52, 199, 89, 0.35)' : '';
+        }
+        if (btnClearApiKey) {
+          btnClearApiKey.disabled = !ok || busy;
+          btnClearApiKey.classList.toggle('is-disabled', !ok || busy);
+        }
+      }
+
+      function saveOwnerApiKey() {
+        var token = (ownerApiKeyInput && ownerApiKeyInput.value) || '';
+        if (!String(token).trim()) {
+          notifyError(
+            t('settings.api_key_failed_title', 'Could not save API key'),
+            t('settings.api_key_empty', 'Paste a Homey API key first.')
+          );
+          return;
+        }
+        if (busy) return;
+        setBusy(btnSaveApiKey, true);
+        api('POST', '/owner-api-key', { token: String(token).trim() })
+          .then(function (res) {
+            if (res && res.bootstrap) applyBootstrap(res.bootstrap);
+            if (ownerApiKeyInput) ownerApiKeyInput.value = '';
+            notifySuccess(
+              t('settings.api_key_saved_title', 'API key saved'),
+              t('settings.api_key_saved_text', 'Native presence writes are enabled.')
+            );
+            showHub('people');
+          })
+          .catch(function (err) {
+            notifyError(t('settings.api_key_failed_title', 'Could not save API key'), friendlyError(err));
+          })
+          .then(function () {
+            setBusy(btnSaveApiKey, false);
+            renderApiKeyStatus();
+          });
+      }
+
+      function clearOwnerApiKey() {
+        if (busy) return;
+        confirmAction(t('settings.confirm_clear_api_key', 'Remove the Homey API key? Presence writes will stop.'))
+          .then(function (ok) {
+            if (!ok) return;
+            setBusy(btnClearApiKey, true);
+            api('POST', '/owner-api-key', { token: '' })
+              .then(function (res) {
+                if (res && res.bootstrap) applyBootstrap(res.bootstrap);
+                if (ownerApiKeyInput) ownerApiKeyInput.value = '';
+                showHub('api');
+              })
+              .catch(function (err) {
+                notifyError(t('settings.api_key_failed_title', 'Could not save API key'), friendlyError(err));
+              })
+              .then(function () {
+                setBusy(btnClearApiKey, false);
+                renderApiKeyStatus();
+              });
+          });
+      }
+
       function load() {
         viewLoading.classList.remove('pf-hidden');
         viewMain.classList.add('pf-hidden');
@@ -2219,13 +2683,11 @@
             applyBootstrap(data);
             viewLoading.classList.add('pf-hidden');
             viewMain.classList.remove('pf-hidden');
-            showHub('people');
-            hideBanner();
-            if (!bootstrap.users.length) {
-              notifyInfo(
-                t('settings.info_no_users_title', 'No Homey users found'),
-                t('settings.info_no_users_text', 'Create Homey users first, then reopen these settings.')
-              );
+            hideToast();
+            if (!bootstrap.ownerApiKeyConfigured) {
+              showHub('api');
+            } else {
+              showHub('people');
             }
           })
           .catch(function (err) {
@@ -2237,13 +2699,7 @@
 
       function doSetEnabled(userId, enabled) {
         var user = userById(userId);
-        busy = true;
-        notifyInfo(
-          t('settings.working_title', 'Updating…'),
-          enabled
-            ? t('settings.working_enable', 'Enabling Fusion for this person.')
-            : t('settings.working_disable', 'Disabling Fusion for this person.')
-        );
+        setBusy(null, true);
         return api('POST', '/users/enabled', { userId: userId, enabled: enabled })
           .then(function (res) {
             applyBootstrap(res.bootstrap);
@@ -2259,12 +2715,21 @@
             notifyError(t('settings.error_title', 'Couldn’t update'), friendlyError(err));
             return load();
           })
-          .then(function () { busy = false; });
+          .then(function () { setBusy(null, false); });
       }
 
       function toggleUser(userId, enabled, inputEl) {
         if (busy) {
           if (inputEl) inputEl.checked = !enabled;
+          return;
+        }
+        if (enabled && !hasApiKey()) {
+          if (inputEl) inputEl.checked = false;
+          showHub('api');
+          notifyWarning(
+            t('settings.api_key_needed_title', 'API key required'),
+            t('settings.api_key_needed_text', 'Open the API tab and save a Homey API key with Presence.')
+          );
           return;
         }
         var user = userById(userId);
@@ -2320,10 +2785,8 @@
           notifyWarning(t('settings.enable_first_title', 'Person disabled'), t('settings.enable_first', 'Enable this person first.'));
           return;
         }
-        busy = true;
-        linkBtn.classList.add('is-loading');
+        setBusy(linkBtn, true);
         setLinkEnabled(false);
-        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_link', 'Linking device…'));
         api('POST', '/linking', {
           userId: user.userId,
           deviceId: device.id,
@@ -2340,11 +2803,11 @@
           })
           .catch(function (err) {
             notifyError(t('settings.link_failed_title', 'Couldn’t link device'), friendlyError(err));
-            setLinkEnabled(true);
           })
           .then(function () {
-            busy = false;
-            linkBtn.classList.remove('is-loading');
+            setBusy(linkBtn, false);
+            var u = userById(selectedUserId);
+            setLinkEnabled(!!(u && u.enabled && selectedDeviceId) && !busy);
           });
       }
 
@@ -2366,8 +2829,7 @@
         confirmAction(t('settings.confirm_unlink', 'Remove this source?') + '\n' + label)
           .then(function (ok) {
             if (!ok) return;
-            busy = true;
-            notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_unlink', 'Removing source…'));
+            setBusy(null, true);
             return api('POST', '/linking/unlink', { userId: user.userId, linkId: linkId })
               .then(function (res) {
                 applyBootstrap(res.bootstrap);
@@ -2376,7 +2838,7 @@
               .catch(function (err) {
                 notifyError(t('settings.unlink_failed_title', 'Couldn’t remove source'), friendlyError(err));
               })
-              .then(function () { busy = false; });
+              .then(function () { setBusy(null, false); });
           });
       }
 
@@ -2387,9 +2849,7 @@
           notifyWarning(t('settings.val_title', 'Check the values'), t('settings.val_text', 'Fix the highlighted fields, then save again.'));
           return;
         }
-        busy = true;
-        saveRulesBtn.classList.add('is-loading');
-        notifyInfo(t('settings.working_title', 'Updating…'), t('settings.working_save', 'Saving rules…'));
+        setBusy(saveRulesBtn, true);
         api('POST', '/users/rules', {
           userId: user.userId,
           rules: {
@@ -2407,8 +2867,7 @@
             notifyError(t('settings.save_failed_title', 'Couldn’t save rules'), friendlyError(err));
           })
           .then(function () {
-            busy = false;
-            saveRulesBtn.classList.remove('is-loading');
+            setBusy(saveRulesBtn, false);
           });
       }
 
@@ -2439,7 +2898,9 @@
       }
       linkBtn.addEventListener('click', link);
       saveRulesBtn.addEventListener('click', saveRules);
-      bannerClose.addEventListener('click', hideBanner);
+      if (btnSaveApiKey) btnSaveApiKey.addEventListener('click', saveOwnerApiKey);
+      if (btnClearApiKey) btnClearApiKey.addEventListener('click', clearOwnerApiKey);
+      if (toastClose) toastClose.addEventListener('click', hideToast);
       btnRetry.addEventListener('click', load);
 
       document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {

@@ -323,7 +323,16 @@
         return height;
       }
 
-      function render(persons) {
+      function render(persons, opts) {
+        opts = opts || {};
+        if (opts.ownerApiKeyConfigured === false) {
+          root.innerHTML = '<p class="homey-text-small empty">' +
+            t('widget.needs_api_key', 'Add a Homey API key in app settings (API tab)') + '</p>';
+          Homey.setHeight(H_EMPTY).catch(function () { });
+          Homey.ready({ height: H_EMPTY });
+          return;
+        }
+
         var list = persons || [];
         var height = totalHeight(list);
 
@@ -393,7 +402,9 @@
       function load() {
         Homey.api('GET', '/', {})
           .then(function (result) {
-            render((result && result.persons) || []);
+            render((result && result.persons) || [], {
+              ownerApiKeyConfigured: result ? result.ownerApiKeyConfigured !== false : true,
+            });
           })
           .catch(function (err) {
             console.error(err);

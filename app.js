@@ -8,6 +8,8 @@ const {
   updateUserConfig,
   defaultUserConfig,
   setConfig,
+  getOwnerApiKey,
+  setOwnerApiKey,
 } = require('./lib/configStore');
 const {
   listLinkableCapabilities,
@@ -20,6 +22,8 @@ module.exports = class PresenceFusionApp extends Homey.App {
 
   async onInit() {
     this._api = await HomeyAPI.createAppAPI({ homey: this.homey });
+    this._writeApi = null;
+    this._writeApiKey = null;
     this._devicesCache = null;
     this._devicesCacheAt = 0;
     this.engine = new PresenceEngine(this);
@@ -73,8 +77,106 @@ module.exports = class PresenceFusionApp extends Homey.App {
   }
 
   async setUserPresent(userId, present) {
-    await this._api.presence.setPresent({ id: userId, value: Boolean(present) });
-    this.log(`Native presence user=${userId} present=${present}`);
+    const value = Boolean(present);
+    const writeApi = await this._getWriteApi();
+    try {
+      await writeApi.presence.setPresent({ id: userId, value });
+      this.log(`Native presence user=${userId} present=${value}`);
+    } catch (err) {
+      throw new Error(`Cannot write native presence: ${this._formatApiError(err)}`);
+    }
+  }
+
+  /**
+   * App API sessions are presence.readonly — writes need a Homey Pro API key (homey.presence).
+   * @returns {Promise<object>}
+   */
+  async _getWriteApi() {
+    const key = getOwnerApiKey(this.homey);
+    if (!key) {
+      throw new Error(
+        'Missing Homey API key. Create one in Homey Settings → API Keys (include Presence), then paste it in Presence Fusion settings.',
+      );
+    }
+    if (this._writeApi && this._writeApiKey === key) return this._writeApi;
+
+    const address = await this.homey.api.getLocalUrl();
+    this._writeApi = await HomeyAPI.createLocalAPI({
+      address,
+      token: key,
+    });
+    this._writeApiKey = key;
+    return this._writeApi;
+  }
+
+  _invalidateWriteApi() {
+    this._writeApi = null;
+    this._writeApiKey = null;
+  }
+
+  _formatApiError(err) {
+    if (!err) return 'unknown';
+    const code = err.statusCode || err.code || '';
+    const desc = err.description || err.error_description || err.message || String(err);
+    return code ? `${code} ${desc}` : desc;
+  }
+
+  _ownerApiKeyHint(key) {
+    if (!key || key.length < 8) return '••••';
+    return `••••${key.slice(-4)}`;
+  }
+
+  /**
+   * Validate token can write presence, then persist.
+   * Uses the app API to pick a user (no User scope needed on the key),
+   * then probes presence.setPresent with the provided key.
+   * @param {string|null} token empty/null clears the key
+   */
+  async saveOwnerApiKey(token) {
+    if (token == null || String(token).trim() === '') {
+      await setOwnerApiKey(this.homey, null);
+      this._invalidateWriteApi();
+      this.log('Homey API key cleared');
+      return this.getSettingsBootstrap();
+    }
+
+    const trimmed = String(token).trim();
+    const address = await this.homey.api.getLocalUrl();
+    let probe;
+    try {
+      // Resolve a user via app session — API key only needs Presence, not Users.
+      const users = await this._api.users.getUsers() || {};
+      const first = Object.values(users).find((u) => u && u.id);
+      if (!first) throw new Error('No Homey users found to verify the API key');
+
+      probe = await HomeyAPI.createLocalAPI({ address, token: trimmed });
+      const current = typeof first.present === 'boolean' ? first.present : true;
+      await probe.presence.setPresent({ id: first.id, value: current });
+    } catch (err) {
+      const msg = this._formatApiError(err);
+      this.error('API key verification failed:', msg);
+      if (String(msg).toLowerCase().includes('scope') || String(err && err.statusCode) === '403') {
+        throw new Error(
+          'API_KEY_SCOPE: Recreate the Homey API key and check Presence (homey.presence).',
+        );
+      }
+      throw new Error(`API_KEY_INVALID: ${msg}`);
+    }
+
+    await setOwnerApiKey(this.homey, trimmed);
+    this._invalidateWriteApi();
+    this._writeApi = probe;
+    this._writeApiKey = trimmed;
+    this.log('Homey API key saved and verified');
+
+    // Push fusion state now that writes work
+    const config = getConfig(this.homey);
+    for (const userId of Object.keys(config.users || {})) {
+      if (config.users[userId].enabled === false) continue;
+      await this.engine.recalculate(userId, 'api-key', { flush: true }).catch((err) => this.error(err));
+    }
+
+    return this.getSettingsBootstrap();
   }
 
   // --- Settings / API helpers ---
@@ -100,12 +202,15 @@ module.exports = class PresenceFusionApp extends Homey.App {
         home: snap.home,
         pendingHome: snap.pendingHome,
         lastTransitionAt: snap.lastTransitionAt,
+        lastWriteError: snap.lastWriteError || null,
         presenceSources: snap.presenceSources || {},
       };
     }).sort((a, b) => String(a.name).localeCompare(String(b.name)));
 
     return {
       users,
+      ownerApiKeyConfigured: Boolean(getOwnerApiKey(this.homey)),
+      ownerApiKeyHint: this._ownerApiKeyHint(getOwnerApiKey(this.homey)),
       // V2 roadmap (not implemented) — for settings copy only
       roadmap: {
         forcedPresence: 'v2',
@@ -131,6 +236,10 @@ module.exports = class PresenceFusionApp extends Homey.App {
     if (!userId) throw new Error('User not found');
     const existing = getConfig(this.homey).users[userId];
     if (!existing) throw new Error('User not found');
+
+    if (enabled && !getOwnerApiKey(this.homey)) {
+      throw new Error('Missing Homey API key. Open the API tab and save a key with Presence first.');
+    }
 
     const user = await updateUserConfig(this.homey, userId, { enabled: Boolean(enabled) });
     if (enabled) {
@@ -268,6 +377,15 @@ module.exports = class PresenceFusionApp extends Homey.App {
   }
 
   async getWidgetStatus() {
+    const ownerApiKeyConfigured = Boolean(getOwnerApiKey(this.homey));
+    if (!ownerApiKeyConfigured) {
+      return {
+        persons: [],
+        ownerApiKeyConfigured: false,
+        updatedAt: Date.now(),
+      };
+    }
+
     let homeyUsers = {};
     try {
       homeyUsers = await this._api.users.getUsers() || {};
@@ -277,11 +395,11 @@ module.exports = class PresenceFusionApp extends Homey.App {
 
     const enabled = this.engine.getAllStatusSnapshots().filter((p) => p.enabled);
 
-    // Align transition timestamps with native presence (source of truth)
+    // Align transition timestamps only (no reconcile — avoids resetting away delays on every widget refresh)
     for (const p of enabled) {
       const homeyUser = homeyUsers[p.userId];
       if (homeyUser && typeof homeyUser.present === 'boolean') {
-        await this.engine.syncFromNativePresent(p.userId, homeyUser.present);
+        await this.engine.syncFromNativePresent(p.userId, homeyUser.present, { reconcile: false });
       }
     }
 
@@ -301,6 +419,7 @@ module.exports = class PresenceFusionApp extends Homey.App {
 
     return {
       persons,
+      ownerApiKeyConfigured: true,
       updatedAt: Date.now(),
     };
   }

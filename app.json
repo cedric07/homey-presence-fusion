@@ -98,6 +98,10 @@
     "updateLinkedSource": {
       "method": "POST",
       "path": "/linking/update"
+    },
+    "saveOwnerApiKey": {
+      "method": "POST",
+      "path": "/owner-api-key"
     }
   },
   "widgets": {
