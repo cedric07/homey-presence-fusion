@@ -13,8 +13,8 @@
     "fr": "Présence Fusion"
   },
   "description": {
-    "en": "Combine several devices into Homey’s native user presence — Wi‑Fi, Beacon, and more.",
-    "fr": "Combinez plusieurs appareils pour piloter la présence native Homey — Wi‑Fi, Beacon, et plus."
+    "en": "Combine several devices into Homey’s native user presence.",
+    "fr": "Combinez plusieurs appareils pour piloter la présence native Homey."
   },
   "category": [
     "tools"

@@ -1,4 +1,4 @@
-Présence Fusion combine plusieurs appareils (Wi‑Fi / Smart Presence, Beacon, Nut, etc.) et écrit la présence native Homey. Plus besoin d’un Flow maison pour la présence multi-appareils : vous utilisez ensuite toutes les cartes Flow Homey natives (quelqu’un est à la maison, parti…).
+Présence Fusion gère la présence Homey automatiquement : liez plusieurs appareils (Wi‑Fi / Smart Presence, Beacon, Nut…), et c’est tout. Plus besoin d’un Flow maison multi-appareils — vous utilisez ensuite toutes les cartes Flow Homey natives (quelqu’un est à la maison, parti…).
 
 Le widget peut aussi forcer Présent / Absent (jusqu’au retour à Auto) si une source est instable. Les boutons sont optionnels dans les réglages du widget.
 
