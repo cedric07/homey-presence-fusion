@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: var(--homey-su-3);
+      padding: var(--homey-su-3) 0;
+      min-width: 0;
+      border-bottom: var(--homey-line-light);
+      box-sizing: border-box;
+    }
+
+    .row:first-child {
+      padding-top: 0;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .avatar-wrap {
+      position: relative;
+      flex: 0 0 48px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      background: var(--homey-color-mono-200);
+    }
+
+    .avatar-fallback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--homey-font-size-default);
+      font-weight: var(--homey-font-weight-bold);
+      line-height: 1;
+      color: var(--homey-text-color-light);
+      background: var(--homey-color-mono-200);
+    }
+
+    .dot {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 2px solid var(--homey-background-color);
+      background: var(--homey-color-mono-400);
+    }
+
+    .dot.is-home {
+      background: var(--homey-color-success);
+    }
+
+    .dot.is-away {
+      background: var(--homey-color-mono-400);
+    }
+
+    .dot.is-unknown {
+      background: var(--homey-color-mono-300);
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--homey-su-2);
+      min-width: 0;
+    }
+
+    .name {
+      margin: 0;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      padding: 2px 8px;
+      border-radius: var(--homey-border-radius-small);
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-bold);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-white);
+    }
+
+    .badge.is-home {
+      background: var(--homey-color-success);
+    }
+
+    .badge.is-away {
+      background: var(--homey-color-mono-400);
+    }
+
+    .badge.is-unknown {
+      background: var(--homey-color-mono-300);
+    }
+
+    .badge.is-forced {
+      background: #5856d6;
+    }
+
+    .force-row {
+      margin-top: 10px;
+      display: flex;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .force-btn {
+      flex: 1;
+      min-width: 0;
+      padding: 4px 6px;
+      border: 0;
+      border-radius: var(--homey-border-radius-small);
+      background: var(--homey-color-mono-200);
+      color: var(--homey-text-color);
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-medium);
+      line-height: var(--homey-line-height-small);
+      cursor: pointer;
+    }
+
+    .force-btn.is-active {
+      background: var(--homey-color-blue-500, #007aff);
+      color: var(--homey-text-color-white);
+    }
+
+    .force-btn:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    .when {
+      margin: 2px 0 0;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-regular);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-light);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .when strong {
+      font-weight: var(--homey-font-weight-medium);
+      color: var(--homey-text-color);
+    }
+
+    .sources {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .source {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--homey-su-2);
+      min-width: 0;
+    }
+
+    .source-name {
+      margin: 0;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-regular);
+      line-height: var(--homey-line-height-small);
+      color: var(--homey-text-color-light);
+    }
+
+    .source-state {
+      margin: 0;
+      flex: 0 0 auto;
+      font-size: var(--homey-font-size-small);
+      font-weight: var(--homey-font-weight-medium);
+      line-height: var(--homey-line-height-small);
+    }
+
+    .source-state.is-home {
+      color: var(--homey-text-color-success);
+    }
+
+    .source-state.is-away {
+      color: var(--homey-text-color-light);
+    }
+
+    .source-state.is-unknown {
+      color: var(--homey-text-color-light);
+    }
+
+    .empty {
+      margin: 0;
+      padding: var(--homey-su-4) 0;
+      text-align: center;
+      color: var(--homey-text-color-light);
+    }
+  </style>
+</head>
+
+<body class="homey-widget">
+  <div id="root" class="list">
+    <p class="homey-text-small empty" id="loading">…</p>
+  </div>
+  <script>
+    function onHomeyReady(Homey) {
+      var root = document.getElementById('root');
+      var settings = Homey.getSettings() || {};
+      var showTransition = settings.show_transition !== false;
+      var showSources = settings.show_sources !== false;
+      var showForce = settings.show_force !== false;
+
+      // Height measured after paint (avoids drift when force/sources toggles change).
+      var H_EMPTY = 80;
+      var H_MIN = 48;
+
+      function t(key, fallback) {
+        try {
+          var v = Homey.__(key);
+          return v && v !== key ? v : fallback;
+        } catch (e) { return fallback; }
+      }
+
+      function escapeHtml(s) {
+        return String(s || '')
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function formatWhen(ts) {
+        if (!ts) return '—';
+        try {
+          var d = new Date(ts);
+          var date = d.toLocaleDateString(undefined, {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          });
+          var time = d.toLocaleTimeString(undefined, {
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+          return date + ' ' + t('widget.at', 'at') + ' ' + time;
+        } catch (e) { return '—'; }
+      }
+
+      function sourceEntries(person) {
+        var linked = person.linkedDevices || {};
+        var runtime = person.presenceSources || {};
+        var links = Object.values(linked);
+        if (links.length) {
+          return links.map(function (link) {
+            var label = String(link.label || link.deviceName || link.id || 'source').trim() || 'source';
+            var st = (link.id && runtime[link.id]) || null;
+            var state = (st && st.state) || 'unknown';
+            if (state !== 'home' && state !== 'away') state = 'unknown';
+            return { label: label, state: state };
+          });
+        }
+        return Object.keys(runtime).map(function (key) {
+          var st = runtime[key];
+          var label = String((st && st.label) || key).trim() || key;
+          var state = (st && st.state) || 'unknown';
+          if (state !== 'home' && state !== 'away') state = 'unknown';
+          return { label: label, state: state };
+        });
+      }
+
+      function sourceStateLabel(state) {
+        if (state === 'home') return t('widget.source_home', 'Detected');
+        if (state === 'away') return t('widget.source_away', 'Not detected');
+        return '—';
+      }
+
+      function initials(name) {
+        var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+      }
+
+      function stateClass(home) {
+        if (home === true) return 'is-home';
+        if (home === false) return 'is-away';
+        return 'is-unknown';
+      }
+
+      function applyHeight(fallback) {
+        requestAnimationFrame(function () {
+          var measured = Math.ceil(document.body.scrollHeight || 0);
+          var height = Math.max(H_MIN, measured || fallback || H_EMPTY);
+          Homey.setHeight(height).catch(function () { });
+          Homey.ready({ height: height });
+        });
+      }
+
+      function render(persons, opts) {
+        opts = opts || {};
+        if (opts.ownerApiKeyConfigured === false) {
+          root.innerHTML = '<p class="homey-text-small empty">' +
+            t('widget.needs_api_key', 'Add a Homey API key in app settings (API tab)') + '</p>';
+          applyHeight(H_EMPTY);
+          return;
+        }
+
+        var list = persons || [];
+
+        if (!list.length) {
+          root.innerHTML = '<p class="homey-text-small empty">' +
+            t('widget.empty', 'Enable a person in app settings') + '</p>';
+          applyHeight(H_EMPTY);
+          return;
+        }
+
+        root.innerHTML = list.map(function (p) {
+          var forced = p.forcedPresent === true || p.forcedPresent === false;
+          var sc = forced ? 'is-forced' : stateClass(p.home);
+          var statusLabel = forced
+            ? (p.forcedPresent
+              ? t('widget.forced_home', 'Forced · home')
+              : t('widget.forced_away', 'Forced · away'))
+            : (p.home === true
+              ? t('widget.home', 'Home')
+              : (p.home === false ? t('widget.away', 'Away') : '—'));
+          var transitionLabel = p.home === true
+            ? t('widget.arrival', 'Arrival')
+            : (p.home === false
+              ? t('widget.departure', 'Departure')
+              : t('widget.since', 'Since'));
+
+          var avatarInner = p.avatar
+            ? '<img class="avatar" src="' + escapeHtml(p.avatar) + '" alt="" />'
+            : '<div class="avatar avatar-fallback">' + escapeHtml(initials(p.name)) + '</div>';
+
+          var whenHtml = '';
+          if (showTransition) {
+            whenHtml = '<p class="when"><strong>' + escapeHtml(transitionLabel) + '</strong>' +
+              ' · ' + escapeHtml(formatWhen(p.lastTransitionAt)) + '</p>';
+          }
+
+          var sourcesHtml = '';
+          if (showSources) {
+            var entries = sourceEntries(p);
+            if (entries.length) {
+              sourcesHtml = '<div class="sources">' + entries.map(function (entry) {
+                var stClass = entry.state === 'home'
+                  ? 'is-home'
+                  : (entry.state === 'away' ? 'is-away' : 'is-unknown');
+                return '<div class="source">' +
+                  '<p class="source-name">' + escapeHtml(entry.label) + '</p>' +
+                  '<p class="source-state ' + stClass + '">' +
+                  escapeHtml(sourceStateLabel(entry.state)) + '</p>' +
+                  '</div>';
+              }).join('') + '</div>';
+            }
+          }
+
+          var forceHtml = '';
+          if (showForce) {
+            var forceMode = forced ? (p.forcedPresent ? 'home' : 'away') : 'auto';
+            forceHtml = '<div class="force-row" data-user-id="' + escapeHtml(p.userId) + '">' +
+              '<button type="button" class="force-btn' + (forceMode === 'auto' ? ' is-active' : '') +
+              '" data-force="auto">' + escapeHtml(t('widget.force_auto', 'Auto')) + '</button>' +
+              '<button type="button" class="force-btn' + (forceMode === 'home' ? ' is-active' : '') +
+              '" data-force="home">' + escapeHtml(t('widget.force_home', 'Home')) + '</button>' +
+              '<button type="button" class="force-btn' + (forceMode === 'away' ? ' is-active' : '') +
+              '" data-force="away">' + escapeHtml(t('widget.force_away', 'Away')) + '</button>' +
+              '</div>';
+          }
+
+          return '<div class="row">' +
+            '<div class="avatar-wrap">' + avatarInner +
+            '<span class="dot ' + stateClass(p.home) + '"></span></div>' +
+            '<div class="main">' +
+            '<div class="head">' +
+            '<p class="homey-text-medium name">' + escapeHtml(p.name) + '</p>' +
+            '<span class="badge ' + sc + '">' + escapeHtml(statusLabel) + '</span>' +
+            '</div>' +
+            whenHtml +
+            sourcesHtml +
+            forceHtml +
+            '</div></div>';
+        }).join('');
+
+        if (showForce) {
+          root.querySelectorAll('.force-row').forEach(function (row) {
+            row.addEventListener('click', function (ev) {
+              var btn = ev.target.closest('.force-btn');
+              if (!btn || busyForce) return;
+              var mode = btn.getAttribute('data-force');
+              var userId = row.getAttribute('data-user-id');
+              setForced(userId, mode, row);
+            });
+          });
+        }
+
+        applyHeight(H_EMPTY);
+      }
+
+      var busyForce = false;
+
+      function setForced(userId, mode, rowEl) {
+        if (!userId || busyForce) return;
+        busyForce = true;
+        if (rowEl) {
+          rowEl.querySelectorAll('.force-btn').forEach(function (b) { b.disabled = true; });
+        }
+        var present = mode === 'auto' ? null : (mode === 'home');
+        Homey.api('POST', '/forced', {
+          userId: userId,
+          present: present,
+        })
+          .then(function (result) {
+            render((result && result.persons) || [], {
+              ownerApiKeyConfigured: result ? result.ownerApiKeyConfigured !== false : true,
+            });
+          })
+          .catch(function (err) {
+            console.error(err);
+            load();
+          })
+          .then(function () {
+            busyForce = false;
+          });
+      }
+
+      function load() {
+        Homey.api('GET', '/', {})
+          .then(function (result) {
+            render((result && result.persons) || [], {
+              ownerApiKeyConfigured: result ? result.ownerApiKeyConfigured !== false : true,
+            });
+          })
+          .catch(function (err) {
+            console.error(err);
+            root.innerHTML = '<p class="homey-text-small empty">Error</p>';
+            applyHeight(H_EMPTY);
+          });
+      }
+
+      Homey.on('presence_updated', load);
+      load();
+    }
+  </script>
+</body>
+
+</html>

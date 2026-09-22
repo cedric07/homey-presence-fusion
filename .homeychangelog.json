@@ -1,5 +1,22 @@
 {
+  "1.1.3": {
+    "en": "Forced presence only locks after a successful Homey write; same-name sources no longer collide. Clear force when disabling a person. Show presence write errors in settings. Smarter AND/quorum with linked sources (select N). Settings status matches Homey native presence.",
+    "fr": "Le forçage ne se verrouille qu’après une écriture Homey réussie ; les sources au même nom ne se chevauchent plus. Forçage effacé à la désactivation. Erreurs d’écriture visibles dans les réglages. Modes ET/quorum plus fiables (select N). Statut Settings aligné sur la présence native Homey."
+  },
+  "1.1.2": {
+    "en": "Clearer App Store description and readme.",
+    "fr": "Description et readme App Store plus clairs."
+  },
+  "1.1.1": {
+    "en": "Clearer Help and App Store readme. Simplified fusion mode labels. Updated widget preview.",
+    "fr": "Aide et readme App Store plus clairs. Libellés de mode de fusion simplifiés. Preview du widget mise à jour."
+  },
+  "1.1.0": {
+    "en": "Forced presence from the dashboard widget (Auto / Home / Away) until you return to Auto. Optional force controls in widget settings. Fusion pauses while forced.",
+    "fr": "Présence forcée depuis le widget dashboard (Auto / Présent / Absent) jusqu’au retour à Auto. Boutons de forçage optionnels dans les réglages du widget. La fusion est en pause pendant le forçage."
+  },
   "1.0.0": {
-    "en": "First version!"
+    "en": "Initial release: fuse Wi‑Fi, Beacon and other devices into Homey’s native user presence. Requires a Homey API key with Presence. App settings, presence overview widget, and App Store assets.",
+    "fr": "Première version : fusionnez Wi‑Fi, Beacon et autres appareils vers la présence native Homey. Nécessite une clé API Homey (Présence). Réglages de l’app, widget vue présence, et visuels App Store."
   }
 }

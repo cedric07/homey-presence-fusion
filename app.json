@@ -1,7 +1,7 @@
 {
   "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
   "id": "com.cedric07.presencefusion",
-  "version": "1.0.0",
+  "version": "1.1.3",
   "compatibility": ">=12.4.0",
   "sdk": 3,
   "runtime": "nodejs",
@@ -13,22 +13,148 @@
     "fr": "Présence Fusion"
   },
   "description": {
-    "en": "Multi-source presence and sleep that drives Homey’s native user presence — combine Wi-Fi, BLE, Flows and more.",
-    "fr": "Présence et sommeil multi-sources qui pilotent la présence native Homey — combinez Wi-Fi, BLE, Flows et plus."
+    "en": "Combine several devices into Homey’s native user presence.",
+    "fr": "Combinez plusieurs appareils pour piloter la présence native Homey."
   },
   "category": [
     "tools"
   ],
+  "brandColor": "#09225F",
   "permissions": [
     "homey:manager:api"
   ],
   "images": {
-    "small": "/assets/images/small.png",
-    "large": "/assets/images/large.png",
-    "xlarge": "/assets/images/xlarge.png"
+    "small": "/assets/images/small.jpg",
+    "large": "/assets/images/large.jpg",
+    "xlarge": "/assets/images/xlarge.jpg"
   },
   "author": {
     "name": "Cédric Andrietti",
     "email": "cedric.andrietti@gmail.com"
+  },
+  "support": "https://github.com/cedric07/homey-presence-fusion/issues",
+  "source": "https://github.com/cedric07/homey-presence-fusion",
+  "bugs": {
+    "url": "https://github.com/cedric07/homey-presence-fusion/issues"
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "CedricAndrietti"
+      }
+    }
+  },
+  "tags": {
+    "en": [
+      "presence",
+      "fusion",
+      "wifi",
+      "beacon",
+      "bluetooth",
+      "smart presence",
+      "home",
+      "away"
+    ],
+    "fr": [
+      "présence",
+      "fusion",
+      "wifi",
+      "beacon",
+      "bluetooth",
+      "smart presence",
+      "maison",
+      "absent"
+    ]
+  },
+  "api": {
+    "getBootstrap": {
+      "method": "GET",
+      "path": "/bootstrap"
+    },
+    "setUserEnabled": {
+      "method": "POST",
+      "path": "/users/enabled"
+    },
+    "setUserRules": {
+      "method": "POST",
+      "path": "/users/rules"
+    },
+    "setUserForcedPresence": {
+      "method": "POST",
+      "path": "/users/forced"
+    },
+    "getLinkCandidates": {
+      "method": "GET",
+      "path": "/linking/candidates"
+    },
+    "linkDeviceSource": {
+      "method": "POST",
+      "path": "/linking"
+    },
+    "unlinkDeviceSource": {
+      "method": "POST",
+      "path": "/linking/unlink"
+    },
+    "getDeviceCapabilities": {
+      "method": "GET",
+      "path": "/linking/capabilities"
+    },
+    "updateLinkedSource": {
+      "method": "POST",
+      "path": "/linking/update"
+    },
+    "saveOwnerApiKey": {
+      "method": "POST",
+      "path": "/owner-api-key"
+    }
+  },
+  "widgets": {
+    "presence_overview": {
+      "name": {
+        "en": "Presence overview",
+        "fr": "Vue présence"
+      },
+      "height": 200,
+      "settings": [
+        {
+          "id": "show_transition",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show arrival / departure",
+            "fr": "Afficher Arrivée / Départ"
+          }
+        },
+        {
+          "id": "show_sources",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show sources",
+            "fr": "Afficher les sources"
+          }
+        },
+        {
+          "id": "show_force",
+          "type": "checkbox",
+          "value": true,
+          "title": {
+            "en": "Show forced presence controls",
+            "fr": "Afficher les commandes de présence forcée"
+          }
+        }
+      ],
+      "api": {
+        "getStatus": {
+          "method": "GET",
+          "path": "/"
+        },
+        "setForcedPresence": {
+          "method": "POST",
+          "path": "/forced"
+        }
+      },
+      "id": "presence_overview"
+    }
   }
 }

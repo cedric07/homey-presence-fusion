@@ -1,8 +1,11 @@
 # Keep Homey deploy package lean
 docs/
+.cursor/
+README.md
 .eslintrc.json
 .gitignore
 .git/
 .DS_Store
 **/.DS_Store
 Thumbs.db
+package-lock.json
