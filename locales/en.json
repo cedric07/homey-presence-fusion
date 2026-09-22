@@ -83,6 +83,8 @@
     "delay_away": "Confirm away (seconds)",
     "delay_hint": "These delays add on top of any debounce already set on Smart Presence, Beacon, etc. If a source already waits before going away, keep Fusion’s away delay low.",
     "save_rules": "Save rules",
+    "force_badge_home": "Forced · home",
+    "force_badge_away": "Forced · away",
     "help_geo_title": "Location presence",
     "help_geo": "Turn OFF Homey location-based presence for every managed user. Otherwise Homey and Presence Fusion overwrite each other.",
     "help_api_title": "Homey API key",
@@ -151,6 +153,11 @@
     "departure": "Departure",
     "at": "at",
     "source_home": "Detected",
-    "source_away": "Not detected"
+    "source_away": "Not detected",
+    "forced_home": "Forced · home",
+    "forced_away": "Forced · away",
+    "force_home": "Home",
+    "force_away": "Away",
+    "force_auto": "Auto"
   }
 }

@@ -83,6 +83,8 @@
     "delay_away": "Confirmer absent (secondes)",
     "delay_hint": "Ces délais s’ajoutent à ceux déjà configurés sur Smart Presence, Beacon, etc. Si une source attend déjà avant de passer absent, gardez le délai Fusion bas.",
     "save_rules": "Enregistrer les règles",
+    "force_badge_home": "Forcé · présent",
+    "force_badge_away": "Forcé · absent",
     "help_geo_title": "Présence par localisation",
     "help_geo": "Désactivez la présence par localisation Homey pour chaque utilisateur géré. Sinon Homey et Présence Fusion s’écrasent.",
     "help_api_title": "Clé API Homey",
@@ -151,6 +153,11 @@
     "departure": "Départ",
     "at": "à",
     "source_home": "Détecté",
-    "source_away": "Non détecté"
+    "source_away": "Non détecté",
+    "forced_home": "Forcé · présent",
+    "forced_away": "Forcé · absent",
+    "force_home": "Présent",
+    "force_away": "Absent",
+    "force_auto": "Auto"
   }
 }

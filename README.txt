@@ -1,5 +1,7 @@
 Presence Fusion updates Homey’s native user presence from several devices you choose (Wi‑Fi / Smart Presence, Beacon, Nut, etc.).
 
+The dashboard widget can also force presence (Auto / Home / Away) until you switch back to Auto — useful when a source is flaky. Force controls can be shown or hidden in the widget settings.
+
 IMPORTANT — Homey API key (required)
 Homey apps can read presence but cannot write it (Athom scope limit: presence.readonly only).
 Create a Homey Pro API key and paste it in this app’s settings:
@@ -20,6 +22,9 @@ Setup
 2. People: enable each Homey user to manage
 3. Sources: search & link their devices
 4. Rules: OR/AND + confirmation delays
-5. Use Homey’s built-in presence Flow cards
+5. Add the Presence overview widget (optional force buttons)
+6. Use Homey’s built-in presence Flow cards
+
+Forced presence: while active, fusion stops writing native presence. Choose Auto to resume fusion.
 
 Defaults: OR fusion, confirm home 5s, confirm away 60s.

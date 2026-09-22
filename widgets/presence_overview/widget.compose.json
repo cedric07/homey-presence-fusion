@@ -22,12 +22,25 @@
         "en": "Show sources",
         "fr": "Afficher les sources"
       }
+    },
+    {
+      "id": "show_force",
+      "type": "checkbox",
+      "value": true,
+      "title": {
+        "en": "Show forced presence controls",
+        "fr": "Afficher les commandes de présence forcée"
+      }
     }
   ],
   "api": {
     "getStatus": {
       "method": "GET",
       "path": "/"
+    },
+    "setForcedPresence": {
+      "method": "POST",
+      "path": "/forced"
     }
   }
 }

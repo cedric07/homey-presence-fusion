@@ -78,6 +78,10 @@
       "method": "POST",
       "path": "/users/rules"
     },
+    "setUserForcedPresence": {
+      "method": "POST",
+      "path": "/users/forced"
+    },
     "getLinkCandidates": {
       "method": "GET",
       "path": "/linking/candidates"

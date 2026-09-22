@@ -19,6 +19,16 @@ module.exports = {
     };
   },
 
+  async setUserForcedPresence({ homey, body }) {
+    const present = body && Object.prototype.hasOwnProperty.call(body, 'present')
+      ? body.present
+      : null;
+    return {
+      user: await homey.app.setUserForcedPresence(body.userId, present),
+      bootstrap: await homey.app.getSettingsBootstrap(),
+    };
+  },
+
   async getLinkCandidates({ homey, query }) {
     return homey.app.getLinkCandidates(query && query.q);
   },

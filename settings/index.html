@@ -529,6 +529,11 @@
       color: var(--pf-muted) !important;
     }
 
+    .pf-chip.is-forced {
+      background: rgba(88, 86, 214, 0.14);
+      color: #5856d6 !important;
+    }
+
     .pf-dot {
       display: inline-block;
       width: 6px;
@@ -2087,6 +2092,14 @@
       function statusChipHtml(u) {
         if (!u.enabled) {
           return '<span class="pf-chip is-off"><span class="pf-dot"></span>' + t('settings.off', 'Off') + '</span>';
+        }
+        if (u.forcedPresent === true) {
+          return '<span class="pf-chip is-forced"><span class="pf-dot"></span>'
+            + t('settings.force_badge_home', 'Forced · home') + '</span>';
+        }
+        if (u.forcedPresent === false) {
+          return '<span class="pf-chip is-forced"><span class="pf-dot"></span>'
+            + t('settings.force_badge_away', 'Forced · away') + '</span>';
         }
         if (u.home === true) {
           return '<span class="pf-chip is-home"><span class="pf-dot"></span>' + t('settings.state_home', 'Home') + '</span>';

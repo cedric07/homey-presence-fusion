@@ -204,6 +204,7 @@ module.exports = class PresenceFusionApp extends Homey.App {
         lastTransitionAt: snap.lastTransitionAt,
         lastWriteError: snap.lastWriteError || null,
         presenceSources: snap.presenceSources || {},
+        forcedPresent: snap.forcedPresent,
       };
     }).sort((a, b) => String(a.name).localeCompare(String(b.name)));
 
@@ -280,6 +281,19 @@ module.exports = class PresenceFusionApp extends Homey.App {
     const user = await updateUserConfig(this.homey, userId, patch);
     await this.engine.recalculate(userId, 'rules');
     return user;
+  }
+
+  /**
+   * @param {string} userId
+   * @param {boolean|null} present true/false force, null = auto
+   */
+  async setUserForcedPresence(userId, present) {
+    if (!userId) throw new Error('User not found');
+    if (!getConfig(this.homey).users[userId]) throw new Error('User not found');
+    if (!getOwnerApiKey(this.homey)) {
+      throw new Error('Missing Homey API key. Open the API tab and save a key with Presence first.');
+    }
+    return this.engine.setForcedPresence(userId, present);
   }
 
   async getLinkCandidates(query) {
