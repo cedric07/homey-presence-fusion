@@ -372,6 +372,14 @@
       gap: 6px;
     }
 
+    .pf-write-error {
+      margin: 4px 0 0;
+      font-size: 0.78em;
+      line-height: 1.35;
+      color: var(--pf-text-danger) !important;
+      width: 100%;
+    }
+
     .pf-row-aside {
       display: flex;
       align-items: center;
@@ -1777,7 +1785,8 @@
             </div>
             <div class="homey-form-group" id="quorum-wrap">
               <label class="homey-form-label" for="quorum-n" data-i18n="settings.quorum_n">Quorum N</label>
-              <input class="homey-form-input" id="quorum-n" type="number" inputmode="numeric" min="1" max="10" step="1" />
+              <select class="homey-form-select" id="quorum-n"></select>
+              <p class="pf-field-hint" id="quorum-hint"></p>
               <p class="pf-field-error" id="err-quorum"></p>
             </div>
             <div class="homey-form-group" id="delay-home-wrap">
@@ -1846,6 +1855,7 @@
       var fusionMode = document.getElementById('fusion-mode');
       var fusionModeHint = document.getElementById('fusion-mode-hint');
       var quorumN = document.getElementById('quorum-n');
+      var quorumHint = document.getElementById('quorum-hint');
       var quorumWrap = document.getElementById('quorum-wrap');
       var delayHome = document.getElementById('delay-home');
       var delayAway = document.getElementById('delay-away');
@@ -1938,7 +1948,7 @@
         if (lower.indexOf('not enabled') !== -1) return t('settings.err_user_disabled', 'Enable this person first.');
         if (lower.indexOf('confirm home') !== -1) return t('settings.val_delay_home', 'Use a value between 0 and 120 seconds.');
         if (lower.indexOf('confirm away') !== -1) return t('settings.val_delay_away', 'Use a value between 60 and 3600 seconds.');
-        if (lower.indexOf('quorum') !== -1) return t('settings.val_quorum', 'Enter a whole number between 1 and 10.');
+        if (lower.indexOf('quorum') !== -1) return t('settings.val_quorum', 'Choose how many sources must be present.');
         if (lower.indexOf('capability') !== -1) return t('settings.err_capability', 'Could not read a suitable capability on this device.');
         if (lower.indexOf('network') !== -1 || lower.indexOf('timeout') !== -1 || lower.indexOf('econn') !== -1) {
           return t('settings.err_network', 'Connection issue. Check Homey and try again.');
@@ -2033,8 +2043,13 @@
         var home = Number(delayHome.value);
         var away = Number(delayAway.value);
         if (fusionMode.value === 'quorum') {
-          if (!Number.isFinite(q) || q < 1 || q > 10 || Math.floor(q) !== q) {
-            setFieldError(quorumWrap, errQuorum, t('settings.val_quorum', 'Enter a whole number between 1 and 10.'));
+          var user = userById(selectedUserId);
+          var nLinks = user && user.linkedDevices ? Object.keys(user.linkedDevices).length : 0;
+          if (nLinks < 1) {
+            setFieldError(quorumWrap, errQuorum, t('settings.val_quorum_no_sources', 'Link at least one source first.'));
+            ok = false;
+          } else if (!Number.isFinite(q) || q < 1 || q > nLinks || Math.floor(q) !== q) {
+            setFieldError(quorumWrap, errQuorum, t('settings.val_quorum', 'Choose how many sources must be present.'));
             ok = false;
           }
         }
@@ -2101,6 +2116,12 @@
       function personSubtitle(u) {
         if (!u.enabled) return t('settings.enable_to_configure', 'Turn on to configure. Setup is kept.');
         return (u.linkedCount || 0) + ' ' + t('settings.sources_count', 'source(s)');
+      }
+
+      function writeErrorHtml(u) {
+        if (!u || !u.enabled || !u.lastWriteError) return '';
+        var msg = t('settings.write_error_prefix', 'Presence write failed:') + ' ' + String(u.lastWriteError);
+        return '<p class="pf-write-error">' + escapeHtml(msg) + '</p>';
       }
 
       function statusChipHtml(u) {
@@ -2189,7 +2210,8 @@
       function renderPersonChrome(user) {
         fillAvatar(personAvatar, user, true);
         personName.textContent = user.name;
-        personMeta.innerHTML = statusChipHtml(user) + '<span>' + personSubtitle(user) + '</span>';
+        personMeta.innerHTML = statusChipHtml(user) + '<span>' + personSubtitle(user) + '</span>'
+          + writeErrorHtml(user);
       }
 
       function renderPeople() {
@@ -2222,7 +2244,8 @@
           title.textContent = u.name;
           var sub = document.createElement('p');
           sub.className = 'pf-row-sub';
-          sub.innerHTML = statusChipHtml(u) + '<span>' + personSubtitle(u) + '</span>';
+          sub.innerHTML = statusChipHtml(u) + '<span>' + personSubtitle(u) + '</span>'
+            + writeErrorHtml(u);
           body.appendChild(title);
           body.appendChild(sub);
 
@@ -2504,11 +2527,44 @@
         }
       }
 
+      function fillQuorumOptions(user, preferredN) {
+        var nLinks = user && user.linkedDevices ? Object.keys(user.linkedDevices).length : 0;
+        var maxN = Math.min(10, Math.max(0, nLinks));
+        var want = Number(preferredN);
+        if (!Number.isFinite(want) || want < 1) want = Math.min(2, maxN) || 1;
+        if (maxN > 0 && want > maxN) want = maxN;
+
+        quorumN.innerHTML = '';
+        if (maxN < 1) {
+          var emptyOpt = document.createElement('option');
+          emptyOpt.value = '';
+          emptyOpt.textContent = '—';
+          quorumN.appendChild(emptyOpt);
+          quorumN.disabled = true;
+          if (quorumHint) {
+            quorumHint.textContent = t('settings.quorum_need_sources', 'Link at least one source to choose N.');
+          }
+          return;
+        }
+
+        quorumN.disabled = false;
+        for (var i = 1; i <= maxN; i++) {
+          var opt = document.createElement('option');
+          opt.value = String(i);
+          opt.textContent = String(i);
+          if (i === want) opt.selected = true;
+          quorumN.appendChild(opt);
+        }
+        if (quorumHint) {
+          quorumHint.textContent = t('settings.quorum_select_hint', 'How many linked sources must be present.');
+        }
+      }
+
       function renderRules() {
         var user = userById(selectedUserId);
         if (!user || !user.enabled) return;
         fusionMode.value = user.fusionMode || 'or';
-        quorumN.value = user.quorumN || 2;
+        fillQuorumOptions(user, user.quorumN || 2);
         delayHome.value = user.delayHomeSec != null ? user.delayHomeSec : 5;
         delayAway.value = user.delayAwaySec != null ? user.delayAwaySec : 60;
         quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
@@ -2887,10 +2943,14 @@
       });
       fusionMode.addEventListener('change', function () {
         quorumWrap.style.display = fusionMode.value === 'quorum' ? '' : 'none';
+        if (fusionMode.value === 'quorum') {
+          fillQuorumOptions(userById(selectedUserId), Number(quorumN.value) || 2);
+        }
         updateModeHint();
         clearRulesErrors();
       });
       [quorumN, delayHome, delayAway].forEach(function (el) {
+        el.addEventListener('change', clearRulesErrors);
         el.addEventListener('input', clearRulesErrors);
       });
       searchEl.addEventListener('input', function () {

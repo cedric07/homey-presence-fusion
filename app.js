@@ -10,6 +10,7 @@ const {
   setConfig,
   getOwnerApiKey,
   setOwnerApiKey,
+  isForced,
 } = require('./lib/configStore');
 const {
   listLinkableCapabilities,
@@ -169,11 +170,16 @@ module.exports = class PresenceFusionApp extends Homey.App {
     this._writeApiKey = trimmed;
     this.log('Homey API key saved and verified');
 
-    // Push fusion state now that writes work
+    // Push forced / fusion state now that writes work
     const config = getConfig(this.homey);
     for (const userId of Object.keys(config.users || {})) {
-      if (config.users[userId].enabled === false) continue;
-      await this.engine.recalculate(userId, 'api-key', { flush: true }).catch((err) => this.error(err));
+      const cfg = config.users[userId];
+      if (!cfg || cfg.enabled === false) continue;
+      if (isForced(cfg)) {
+        await this.engine._applyHome(userId, Boolean(cfg.forcedPresent)).catch((err) => this.error(err));
+      } else {
+        await this.engine.recalculate(userId, 'api-key', { flush: true }).catch((err) => this.error(err));
+      }
     }
 
     return this.getSettingsBootstrap();
@@ -199,7 +205,7 @@ module.exports = class PresenceFusionApp extends Homey.App {
         ...u,
         avatar: this._resolveUserAvatar(homeyUser),
         linkedCount: Object.keys(u.linkedDevices || {}).length,
-        home: snap.home,
+        home: (homeyUser && typeof homeyUser.present === 'boolean') ? homeyUser.present : snap.home,
         pendingHome: snap.pendingHome,
         lastTransitionAt: snap.lastTransitionAt,
         lastWriteError: snap.lastWriteError || null,
@@ -237,7 +243,12 @@ module.exports = class PresenceFusionApp extends Homey.App {
       throw new Error('Missing Homey API key. Open the API tab and save a key with Presence first.');
     }
 
-    const user = await updateUserConfig(this.homey, userId, { enabled: Boolean(enabled) });
+    const patch = { enabled: Boolean(enabled) };
+    if (!enabled) {
+      patch.forcedPresent = null;
+      this.engine.clearHomeTimer(userId);
+    }
+    const user = await updateUserConfig(this.homey, userId, patch);
     if (enabled) {
       await this.engine.rebindUser(userId);
       await this.engine.recalculate(userId, 'enable', { flush: true });
@@ -272,9 +283,20 @@ module.exports = class PresenceFusionApp extends Homey.App {
       throw new Error('Confirm away must be between 60 and 3600 seconds');
     }
 
+    const linkedCount = Object.keys((getConfig(this.homey).users[userId].linkedDevices) || {}).length;
+    let quorumN = Number.isFinite(quorum) ? quorum : 2;
+    if (mode === 'quorum') {
+      if (linkedCount < 1) {
+        throw new Error('Link at least one source before using quorum');
+      }
+      if (quorumN < 1 || quorumN > linkedCount) {
+        throw new Error(`Quorum N must be between 1 and ${linkedCount}`);
+      }
+    }
+
     const patch = {
       fusionMode: mode,
-      quorumN: Number.isFinite(quorum) ? quorum : 2,
+      quorumN,
       delayHomeSec: delayHome,
       delayAwaySec: delayAway,
     };

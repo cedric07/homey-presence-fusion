@@ -296,14 +296,15 @@
         if (links.length) {
           return links.map(function (link) {
             var label = String(link.label || link.deviceName || link.id || 'source').trim() || 'source';
-            var st = runtime[label];
+            var st = (link.id && runtime[link.id]) || null;
             var state = (st && st.state) || 'unknown';
             if (state !== 'home' && state !== 'away') state = 'unknown';
             return { label: label, state: state };
           });
         }
-        return Object.keys(runtime).map(function (label) {
-          var st = runtime[label];
+        return Object.keys(runtime).map(function (key) {
+          var st = runtime[key];
+          var label = String((st && st.label) || key).trim() || key;
           var state = (st && st.state) || 'unknown';
           if (state !== 'home' && state !== 'away') state = 'unknown';
           return { label: label, state: state };
