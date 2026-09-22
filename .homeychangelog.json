@@ -1,4 +1,8 @@
 {
+  "1.1.0": {
+    "en": "Forced presence from the dashboard widget (Auto / Home / Away) until you return to Auto. Optional force controls in widget settings. Fusion pauses while forced.",
+    "fr": "Présence forcée depuis le widget dashboard (Auto / Présent / Absent) jusqu’au retour à Auto. Boutons de forçage optionnels dans les réglages du widget. La fusion est en pause pendant le forçage."
+  },
   "1.0.0": {
     "en": "Initial release: fuse Wi‑Fi, Beacon and other devices into Homey’s native user presence. Requires a Homey API key with Presence. App settings, presence overview widget, and App Store assets.",
     "fr": "Première version : fusionnez Wi‑Fi, Beacon et autres appareils vers la présence native Homey. Nécessite une clé API Homey (Présence). Réglages de l’app, widget vue présence, et visuels App Store."
