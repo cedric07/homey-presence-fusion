@@ -22,6 +22,4 @@ Setup
 4. Rules: OR/AND + confirmation delays
 5. Use Homey’s built-in presence Flow cards
 
-V1 manages native presence only (not asleep).
-Coming in V2: forced presence override, asleep management.
 Defaults: OR fusion, confirm home 5s, confirm away 60s.

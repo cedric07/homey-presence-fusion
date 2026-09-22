@@ -211,11 +211,6 @@ module.exports = class PresenceFusionApp extends Homey.App {
       users,
       ownerApiKeyConfigured: Boolean(getOwnerApiKey(this.homey)),
       ownerApiKeyHint: this._ownerApiKeyHint(getOwnerApiKey(this.homey)),
-      // V2 roadmap (not implemented) — for settings copy only
-      roadmap: {
-        forcedPresence: 'v2',
-        asleep: 'v2',
-      },
     };
   }
 

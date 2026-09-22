@@ -2,9 +2,6 @@
 
 App Homey Pro qui fusionne plusieurs sources (téléphone / Smart Presence, Beacon, Nut, etc.) pour piloter la **présence native** Homey (`user.present`). Les Flows Homey natifs (« quelqu’un est à la maison / parti ») restent la surface d’automation.
 
-> **V1** : présence native uniquement.  
-> **V2 (roadmap)** : présence forcée (override), gestion du sommeil (`asleep`).
-
 ## Prérequis
 
 - Homey Pro (local), compatibility `>= 12.4.0`
@@ -65,5 +62,4 @@ Ce `README.md` est **exclu du déploiement** Homey (voir `.homeyignore`).
 
 ## Licence / support
 
-- Issues : voir le dépôt GitHub du projet  
-- V2 non implémentée : ne pas coder override / `asleep` tant que non demandé
+- Issues : voir le dépôt GitHub du projet

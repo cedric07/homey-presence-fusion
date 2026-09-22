@@ -22,6 +22,4 @@ Mise en place
 4. Règles : OU/ET + délais de confirmation
 5. Utiliser les cartes Flow Homey natives
 
-V1 gère uniquement la présence native (pas le sommeil).
-Prévu en V2 : présence forcée, gestion du sommeil.
 Défauts : fusion OU, confirmer présent 5 s, confirmer absent 60 s.
