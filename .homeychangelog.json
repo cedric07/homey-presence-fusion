@@ -1,4 +1,8 @@
 {
+  "1.1.1": {
+    "en": "Clearer Help and App Store readme. Simplified fusion mode labels. Updated widget preview.",
+    "fr": "Aide et readme App Store plus clairs. Libellés de mode de fusion simplifiés. Preview du widget mise à jour."
+  },
   "1.1.0": {
     "en": "Forced presence from the dashboard widget (Auto / Home / Away) until you return to Auto. Optional force controls in widget settings. Fusion pauses while forced.",
     "fr": "Présence forcée depuis le widget dashboard (Auto / Présent / Absent) jusqu’au retour à Auto. Boutons de forçage optionnels dans les réglages du widget. La fusion est en pause pendant le forçage."
