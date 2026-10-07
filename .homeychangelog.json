@@ -1,4 +1,8 @@
 {
+  "1.1.5": {
+    "en": "Fix auto-detect picking alarm_battery instead of alarm_is_home (phones/watches). Existing Auto-linked sources are corrected on restart.",
+    "fr": "Corrige l’auto-détection qui choisissait alarm_battery au lieu de alarm_is_home (téléphones/montres). Les sources en Auto sont corrigées au redémarrage."
+  },
   "1.1.4": {
     "en": "Link to the Homey Community topic on the App Store page.",
     "fr": "Lien vers le sujet Homey Community sur la page App Store."
