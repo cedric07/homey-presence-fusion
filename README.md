@@ -1,6 +1,8 @@
 # Presence Fusion
 
-Homey Pro app that merges several sources (phone / Smart Presence, Beacon, Nut, etc.) to drive Homey’s **native presence** (`user.present`). Built-in Homey Flow cards (“someone is home / left”) remain the automation surface.
+Homey Pro app that turns several devices into one reliable **native presence** (`user.present`). Link a phone / Smart Presence, Beacon, Nut, Find My, or similar — Fusion combines them so you get fewer false home / false away events. Built-in Homey Flow cards (“someone is home / left”) remain the automation surface — no custom multi-device presence Flow.
+
+Fusion fuses the signals your detectors already provide (it does not replace them). Timing is limited by those sources, plus Fusion’s confirmation delays.
 
 The **widget** can also **force** presence (Auto / Home / Away) until you manually return to Auto — useful when a source is flaky. Force buttons can be shown or hidden in the widget settings.
 
@@ -31,9 +33,10 @@ Writes use `HomeyAPI.createLocalAPI` with this key. Device / user reads stay on 
 1. Save the API key (above)
 2. **People**: enable each Homey user to manage
 3. **Sources**: search and link devices
-4. **Rules**: OR / AND / quorum mode + confirmation delays
-5. Add the **Presence overview** widget to the dashboard (force buttons optional)
-6. Use Homey’s **built-in Flow cards** on presence
+4. **Capability**: check what Automatic selected — it should match the home / away signal; change it if needed
+5. **Rules**: OR / AND / quorum mode + confirmation delays
+6. Add the **Presence overview** widget to the dashboard (force buttons optional)
+7. Use Homey’s **built-in Flow cards** on presence
 
 Defaults: **OR** fusion, confirm home **5 s**, confirm away **60 s**.  
 These delays add on top of any debounce already set on Smart Presence / Beacon, etc.

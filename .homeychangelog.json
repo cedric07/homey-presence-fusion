@@ -1,4 +1,8 @@
 {
+  "1.1.7": {
+    "en": "Clearer App Store readme: what Fusion does, API key why/how, and capability check after linking.",
+    "fr": "Readme App Store plus clair : rôle de Fusion, clé API (pourquoi / comment), et vérification de la capability après liaison."
+  },
   "1.1.6": {
     "en": "Help: after linking a source, check the capability Automatic selected.",
     "fr": "Aide : après liaison d’une source, vérifiez la capability choisie en Automatique."

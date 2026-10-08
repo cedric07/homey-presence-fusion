@@ -1,19 +1,22 @@
-Presence Fusion manages Homey presence automatically: link several devices (Wi‑Fi / Smart Presence, Beacon, Nut…), and you’re done. No custom multi-device Flow — then use all built-in Homey Flow cards (someone is home, left…).
+Presence Fusion turns several devices into one reliable Homey presence. Link a phone / Smart Presence, Beacon, Nut, Find My, or similar — Fusion combines them and writes Homey’s native presence (who is home / away).
 
-The widget can also force Home / Away (until you switch back to Auto) when a source is flaky. Force buttons are optional in the widget settings.
+Fewer false home and false away events when a single source is flaky. Your Flows keep using Homey’s built-in cards (someone is home, left…). No custom multi-device presence Flow to maintain.
+
+Optional Presence overview widget: who’s home, each source’s state, and Force Home / Away / Auto when a source misbehaves.
 
 Homey API key (required)
-Homey apps can read presence but cannot write it. Create a Homey Pro API key and paste it in this app’s settings:
-
+Homey only lets apps write presence with an API key. That is what allows Fusion to set home / away from your linked devices.
 1. my.homey.app → Settings → API Keys → New API Key
 2. Check Presence (homey.presence)
 3. Copy the key (shown once)
-4. Apps → Presence Fusion → Configure → API key tab → Save
-
-Avoid conflicts
-For each managed person: turn off Homey location-based presence, and don’t use Flows/apps that also force home/away.
+4. Apps → Presence Fusion → Configure → API key tab → paste → Save
 
 Setup
 1. Save the API key
-2. Enable a person, link devices, set mode and delays
-3. (Optional) Add the Presence overview widget
+2. Enable a person, link their devices
+3. After linking, check the capability Automatic selected — it should match the home / away signal; change it if needed
+4. Choose a fusion mode (OR / AND / quorum) and confirmation delays
+5. (Optional) Add the Presence overview widget
+
+Avoid conflicts
+For each managed person: turn off Homey location-based presence, and don’t use Flows/apps that also force home/away.
